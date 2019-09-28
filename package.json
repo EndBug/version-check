@@ -1,0 +1,34 @@
+{
+  "name": "version-check",
+  "version": "1.0.0",
+  "description": "An action that allows you to check whether your npm package version has been updated",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EndBug/version-check.git"
+  },
+  "keywords": [
+    "github",
+    "action",
+    "version",
+    "npm",
+    "node"
+  ],
+  "author": "Federico Grandi <fgrandi30@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EndBug/version-check/issues"
+  },
+  "homepage": "https://github.com/EndBug/version-check#readme",
+  "dependencies": {
+    "@actions/core": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.8",
+    "typescript": "^3.6.3"
+  }
+}
