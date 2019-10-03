@@ -27,7 +27,7 @@ jobs:
         author_email: fgrandi30@gmail.com
         force: true
         message: '[auto] Update compiled version'
-        path: lib
+        path: lib node_modules
         pattern: '*.*'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
