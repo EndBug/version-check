@@ -20,7 +20,7 @@ async function main() {
 }
 
 interface Commit {
-  sha: string
+  id: string
   message: string
   author: {
     name: string
@@ -139,8 +139,8 @@ async function checkCommits(commits: Commit[], version: string) {
       let match = commit.message.match(semverRegex()) || []
       if (match.includes(version)) {
         console.log(commit)
-        if (await checkDiff(commit.sha, version)) {
-          console.log(`Found match for version ${version}: ${commit.sha.substring(0, 7)} ${commit.message}`)
+        if (await checkDiff(commit.id, version)) {
+          console.log(`Found match for version ${version}: ${commit.id.substring(0, 7)} ${commit.message}`)
           return true
         }
       }
@@ -150,8 +150,8 @@ async function checkCommits(commits: Commit[], version: string) {
       console.log('No standard npm version commit found, switching to diff search (this could take more time...)')
 
       for (let commit of commits) {
-        if (await checkDiff(commit.sha, version)) {
-          console.log(`Found match for version ${version}: ${commit.sha.substring(0, 7)} ${commit.message}`)
+        if (await checkDiff(commit.id, version)) {
+          console.log(`Found match for version ${version}: ${commit.id.substring(0, 7)} ${commit.message}`)
           return true
         }
       }
