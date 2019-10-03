@@ -38,7 +38,9 @@ function isPackageObj(value): value is PackageObj {
 }
 
 function getCommit(sha: string): Promise<CommitReponse> {
-  return axios.get(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`)
+  let url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`
+  console.log(url)
+  return axios.get(url)
 }
 interface CommitReponse {
   url: string
