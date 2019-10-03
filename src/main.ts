@@ -16,6 +16,7 @@ type ArgValue<T> =
 
 async function main() {
   const eventObj = await readJson(eventFile)
+  console.log(eventObj)
   return await processDirectory(dir, eventObj.commits)
 }
 
@@ -283,6 +284,7 @@ class NeutralExitError extends Error { }
 // #endregion
 
 if (require.main == module) {
+  console.log('Searching for version update...')
   main().catch(e => {
     if (e instanceof NeutralExitError) process.exitCode = 78
     else {
