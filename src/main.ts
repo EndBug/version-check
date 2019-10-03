@@ -191,6 +191,9 @@ async function checkDiff(sha: string, version: string) {
       deleted: !!versionLines.deleted && (versionLines.deleted.match(semverRegex()) || [])[0]
     }
     if (versions.added != version) return false
+    console.log(versionLines.added.match(semverRegex()))
+    console.log(versions)
+    console.log(version)
     console.log('check ok')
 
     setOutput('changed', true)
