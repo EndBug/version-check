@@ -169,6 +169,7 @@ async function checkDiff(sha: string, version: string) {
     console.log(commit)
     let pkg = commit.files.find(f => f.filename == packageFileName)
     if (!pkg) return false
+    console.log('pkg ok')
 
     let versionLines: {
       added?: string
@@ -178,16 +179,19 @@ async function checkDiff(sha: string, version: string) {
     let rawLines = pkg.patch.split('\n')
       .filter(line => line.includes('"version":') && ['+', '-'].includes(line[0]))
     if (rawLines.length > 2) return false
+    console.log('lines ok')
 
     for (let line of rawLines)
       versionLines[line.startsWith('+') ? 'added' : 'deleted'] = line
     if (!versionLines.added) return false
+    console.log('added ok')
 
     let versions = {
       added: (versionLines.added.match(semverRegex()) || [])[0],
       deleted: !!versionLines.deleted && (versionLines.deleted.match(semverRegex()) || [])[0]
     }
     if (versions.added != version) return false
+    console.log('check ok')
 
     setOutput('changed', true)
     if (versions.deleted)
