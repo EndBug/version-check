@@ -1,11 +1,11 @@
+import core from '@actions/core'
 import axios from 'axios'
-import { spawn } from 'child_process'
 import { readFile } from "fs";
 import { join } from "path";
 import semverDiff from 'semver-diff'
 import semverRegex from 'semver-regex';
 
-const packageFileName = process.env.INPUT_FILE_NAME || 'package.json',
+const packageFileName = core.getInput('file-name') || 'package.json',
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
   eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json'
 
@@ -146,7 +146,7 @@ async function checkCommits(commits: Commit[], version: string) {
       }
     }
 
-    if (process.env.INPUT_DIFF_SEARCH) {
+    if (core.getInput('diff-search')) {
       console.log('No standard npm version commit found, switching to diff search (this could take more time...)')
 
       for (let commit of commits) {
@@ -247,41 +247,7 @@ async function readJson(file: string) {
 }
 
 function setOutput<T extends 'changed' | 'type'>(name: T, value: ArgValue<T>) {
-  return run(dir, 'echo', `::set-output name=${name}::${value}`)
-}
-
-function run(cwd: string, command: string, ...args: string[]): Promise<true> {
-  console.log("Executing:", command, args.join(" "))
-  return new Promise((resolve, reject) => {
-    const proc = spawn(command, args, {
-      cwd,
-      stdio: ["ignore", "ignore", "pipe"]
-    })
-    const buffers: any[] = []
-
-    proc.stderr.on("data", data => buffers.push(data))
-
-    proc.on("error", () => {
-      reject(new Error(`command failed: ${command}`))
-    })
-
-    proc.on("exit", code => {
-      if (code === 0) {
-        resolve(true)
-      } else {
-        const stderr = Buffer.concat(buffers)
-          .toString("utf8")
-          .trim()
-
-        if (stderr) {
-          console.log(`Command failed with code ${code}`)
-          console.log(stderr)
-        }
-
-        reject(new ExitError(code))
-      }
-    });
-  });
+  return core.setOutput(name, `${value}`)
 }
 
 // #region Error classes
