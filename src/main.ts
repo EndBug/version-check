@@ -139,7 +139,6 @@ async function checkCommits(commits: Commit[], version: string) {
     for (let commit of commits) {
       let match = commit.message.match(semverRegex()) || []
       if (match.includes(version)) {
-        console.log(commit)
         if (await checkDiff(commit.id, version)) {
           console.log(`Found match for version ${version}: ${commit.id.substring(0, 7)} ${commit.message}`)
           return true
@@ -167,6 +166,7 @@ async function checkCommits(commits: Commit[], version: string) {
 async function checkDiff(sha: string, version: string) {
   try {
     let commit = await getCommit(sha)
+    console.log(commit)
     let pkg = commit.files.find(f => f.filename == packageFileName)
     if (!pkg) return false
 
