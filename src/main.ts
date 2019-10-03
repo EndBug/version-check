@@ -196,9 +196,9 @@ async function checkDiff(sha: string, version: string) {
     if (versions.added != version) return false
     console.log('check ok')
 
-    setOutput('changed', true)
+    await setOutput('changed', true)
     if (versions.deleted)
-      setOutput('type', semverDiff(versions.deleted, versions.added))
+      await setOutput('type', semverDiff(versions.deleted, versions.added))
     return true
   } catch (e) {
     console.error(`An error occured in checkDiff:\n${e}`)
