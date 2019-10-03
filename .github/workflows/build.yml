@@ -1,0 +1,33 @@
+name: Build
+on: push
+
+jobs:
+  build:
+    name: Build compiled JS version
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@master
+
+    - name: Set up Node.js
+      uses: actions/setup-node@master
+      with:
+        node-version: 12.0.0
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Compile TypeScript into JavaScript
+      run: npm run build
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v2.0.0
+      with:
+        author_name: Federico Grandi
+        author_email: fgrandi30@gmail.com
+        force: true
+        message: '[auto] Update compiled version'
+        path: lib
+        pattern: '*.*'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
