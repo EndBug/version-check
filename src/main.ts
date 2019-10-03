@@ -187,8 +187,8 @@ async function checkDiff(sha: string, version: string) {
     console.log('added ok')
 
     let versions = {
-      added: (versionLines.added.match(semverRegex()) || [])[0],
-      deleted: !!versionLines.deleted && (versionLines.deleted.match(semverRegex()) || [])[0]
+      added: matchVersion(versionLines.added),
+      deleted: !!versionLines.deleted && matchVersion(versionLines.deleted)
     }
     console.log(versionLines)
     console.log(versionLines.added.match(semverRegex()))
@@ -204,6 +204,12 @@ async function checkDiff(sha: string, version: string) {
     console.error(`An error occured in checkDiff:\n${e}`)
     throw new ExitError(1)
   }
+}
+
+function matchVersion(str: string) {
+  return ((str.match(/[0-9.]+/g) || [])
+    .map(s => s.match(semverRegex()))
+    .find(e => !!e) || [])[0]
 }
 
 async function processDirectory(dir: string, commits: Commit[]) {
