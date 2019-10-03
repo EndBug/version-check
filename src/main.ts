@@ -16,7 +16,6 @@ type ArgValue<T> =
 
 async function main() {
   const eventObj = await readJson(eventFile)
-  console.log(eventObj)
   return await processDirectory(dir, eventObj.commits)
 }
 
@@ -139,6 +138,7 @@ async function checkCommits(commits: Commit[], version: string) {
     for (let commit of commits) {
       let match = commit.message.match(semverRegex()) || []
       if (match.includes(version)) {
+        console.log(commit)
         if (await checkDiff(commit.sha, version)) {
           console.log(`Found match for version ${version}: ${commit.sha.substring(0, 7)} ${commit.message}`)
           return true
