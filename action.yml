@@ -6,7 +6,6 @@ inputs:
   diff_search:
     description: Whether to search the bump commit using diffs (recommended ONLY if not using standard 'npm version' commits)
     required: false
-    default: false
   file_name:
     description: A custom path to the package.json file
     required: false
