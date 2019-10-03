@@ -134,28 +134,32 @@ interface CommitReponse {
 
 
 async function checkCommits(commits: Commit[], version: string) {
-  for (let commit of commits) {
-    let match = commit.message.match(semverRegex()) || []
-    if (match.includes(version)) {
-      if (await checkDiff(commit.sha, version)) {
-        console.log(`Found match for version ${version}: ${commit.sha.substring(0, 7)} ${commit.message}`)
-        return true
-      }
-    }
-  }
-
-  if (process.env.INPUT_DIFF_SEARCH) {
-    console.log('No standard npm version commit found, switching to diff search (this could take more time...)')
-
+  try {
     for (let commit of commits) {
-      if (await checkDiff(commit.sha, version)) {
-        console.log(`Found match for version ${version}: ${commit.sha.substring(0, 7)} ${commit.message}`)
-        return true
+      let match = commit.message.match(semverRegex()) || []
+      if (match.includes(version)) {
+        if (await checkDiff(commit.sha, version)) {
+          console.log(`Found match for version ${version}: ${commit.sha.substring(0, 7)} ${commit.message}`)
+          return true
+        }
       }
     }
-  }
 
-  return false
+    if (process.env.INPUT_DIFF_SEARCH) {
+      console.log('No standard npm version commit found, switching to diff search (this could take more time...)')
+
+      for (let commit of commits) {
+        if (await checkDiff(commit.sha, version)) {
+          console.log(`Found match for version ${version}: ${commit.sha.substring(0, 7)} ${commit.message}`)
+          return true
+        }
+      }
+    }
+
+    return false
+  } catch (e) {
+    throw e;
+  }
 }
 
 async function checkDiff(sha: string, version: string) {
@@ -189,25 +193,29 @@ async function checkDiff(sha: string, version: string) {
     return true
   } catch (e) {
     console.error(`An error occured in checkDiff:\n${e}`)
-    return false
+    throw new ExitError(1)
   }
 }
 
 async function processDirectory(dir: string, commits: Commit[]) {
-  const packageFile = join(dir, packageFileName),
-    packageObj = await readJson(packageFile).catch(() => {
-      Promise.reject(
-        new NeutralExitError(`Package file not found: ${packageFile}`)
-      )
-    })
+  try {
+    const packageFile = join(dir, packageFileName),
+      packageObj = await readJson(packageFile).catch(() => {
+        Promise.reject(
+          new NeutralExitError(`Package file not found: ${packageFile}`)
+        )
+      })
 
-  if (!isPackageObj(packageObj))
-    throw new Error('Can\'t find version field')
+    if (!isPackageObj(packageObj))
+      throw new Error('Can\'t find version field')
 
-  if (commits.length >= 20)
-    console.warn('This worflow run topped the commit limit set by GitHub webhooks: that means that commits could not appear and that the run could not find the version change.');
+    if (commits.length >= 20)
+      console.warn('This worflow run topped the commit limit set by GitHub webhooks: that means that commits could not appear and that the run could not find the version change.');
 
-  await checkCommits(commits, packageObj.version)
+    await checkCommits(commits, packageObj.version)
+  } catch (e) {
+    throw e
+  }
 }
 
 async function readJson(file: string) {
