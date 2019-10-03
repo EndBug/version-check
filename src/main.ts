@@ -1,4 +1,4 @@
-import core from '@actions/core'
+import * as core from '@actions/core'
 import axios from 'axios'
 import { readFile } from "fs";
 import { join } from "path";
