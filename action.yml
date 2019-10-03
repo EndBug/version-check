@@ -3,10 +3,10 @@ author: Federico Grandi
 description: An action that allows you to check whether your npm package version has been updated
 
 inputs: 
-  diff_search:
+  diff-search:
     description: Whether to search the bump commit using diffs (recommended ONLY if not using standard 'npm version' commits)
     required: false
-  file_name:
+  file-name:
     description: A custom path to the package.json file
     required: false
 

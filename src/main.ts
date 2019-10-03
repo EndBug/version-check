@@ -1,11 +1,11 @@
+import * as core from '@actions/core'
 import axios from 'axios'
-import { spawn } from 'child_process'
 import { readFile } from "fs";
 import { join } from "path";
 import semverDiff from 'semver-diff'
 import semverRegex from 'semver-regex';
 
-const packageFileName = process.env.INPUT_FILE_NAME || 'package.json',
+const packageFileName = core.getInput('file-name') || 'package.json',
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
   eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json'
 
@@ -20,7 +20,7 @@ async function main() {
 }
 
 interface Commit {
-  sha: string
+  id: string
   message: string
   author: {
     name: string
@@ -37,8 +37,9 @@ function isPackageObj(value): value is PackageObj {
   return !!value && !!value.version
 }
 
-function getCommit(sha: string): Promise<CommitReponse> {
-  return axios.get(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`)
+async function getCommit(sha: string): Promise<CommitReponse> {
+  let url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`
+  return (await axios.get(url)).data
 }
 interface CommitReponse {
   url: string
@@ -138,19 +139,19 @@ async function checkCommits(commits: Commit[], version: string) {
     for (let commit of commits) {
       let match = commit.message.match(semverRegex()) || []
       if (match.includes(version)) {
-        if (await checkDiff(commit.sha, version)) {
-          console.log(`Found match for version ${version}: ${commit.sha.substring(0, 7)} ${commit.message}`)
+        if (await checkDiff(commit.id, version)) {
+          console.log(`Found match for version ${version}: ${commit.id.substring(0, 7)} ${commit.message}`)
           return true
         }
       }
     }
 
-    if (process.env.INPUT_DIFF_SEARCH) {
+    if (core.getInput('diff-search')) {
       console.log('No standard npm version commit found, switching to diff search (this could take more time...)')
 
       for (let commit of commits) {
-        if (await checkDiff(commit.sha, version)) {
-          console.log(`Found match for version ${version}: ${commit.sha.substring(0, 7)} ${commit.message}`)
+        if (await checkDiff(commit.id, version)) {
+          console.log(`Found match for version ${version}: ${commit.id.substring(0, 7)} ${commit.message}`)
           return true
         }
       }
@@ -182,19 +183,25 @@ async function checkDiff(sha: string, version: string) {
     if (!versionLines.added) return false
 
     let versions = {
-      added: (versionLines.added.match(semverRegex()) || [])[0],
-      deleted: !!versionLines.deleted && (versionLines.deleted.match(semverRegex()) || [])[0]
+      added: matchVersion(versionLines.added),
+      deleted: !!versionLines.deleted && matchVersion(versionLines.deleted)
     }
     if (versions.added != version) return false
 
-    setOutput('changed', true)
+    await setOutput('changed', true)
     if (versions.deleted)
-      setOutput('type', semverDiff(versions.deleted, versions.added))
+      await setOutput('type', semverDiff(versions.deleted, versions.added))
     return true
   } catch (e) {
     console.error(`An error occured in checkDiff:\n${e}`)
     throw new ExitError(1)
   }
+}
+
+function matchVersion(str: string) {
+  return ((str.match(/[0-9.]+/g) || [])
+    .map(s => s.match(semverRegex()))
+    .find(e => !!e) || [])[0]
 }
 
 async function processDirectory(dir: string, commits: Commit[]) {
@@ -232,41 +239,7 @@ async function readJson(file: string) {
 }
 
 function setOutput<T extends 'changed' | 'type'>(name: T, value: ArgValue<T>) {
-  return run(dir, 'echo', `::set-output name=${name}::${value}`)
-}
-
-function run(cwd: string, command: string, ...args: string[]): Promise<true> {
-  console.log("Executing:", command, args.join(" "))
-  return new Promise((resolve, reject) => {
-    const proc = spawn(command, args, {
-      cwd,
-      stdio: ["ignore", "ignore", "pipe"]
-    })
-    const buffers: any[] = []
-
-    proc.stderr.on("data", data => buffers.push(data))
-
-    proc.on("error", () => {
-      reject(new Error(`command failed: ${command}`))
-    })
-
-    proc.on("exit", code => {
-      if (code === 0) {
-        resolve(true)
-      } else {
-        const stderr = Buffer.concat(buffers)
-          .toString("utf8")
-          .trim()
-
-        if (stderr) {
-          console.log(`Command failed with code ${code}`)
-          console.log(stderr)
-        }
-
-        reject(new ExitError(code))
-      }
-    });
-  });
+  return core.setOutput(name, `${value}`)
 }
 
 // #region Error classes
@@ -283,6 +256,7 @@ class NeutralExitError extends Error { }
 // #endregion
 
 if (require.main == module) {
+  console.log('Searching for version update...')
   main().catch(e => {
     if (e instanceof NeutralExitError) process.exitCode = 78
     else {
