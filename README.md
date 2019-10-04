@@ -48,6 +48,10 @@ Here's an example:
   run: 'echo "No version change :/"'
 ```
 
+## Contributing
+
+If you want to contribute to the action, even by just raising a problem or proposing an idea, you can click [here](CONTRIBUTING.md) to find out how to do it ;)
+
 ## License
 
 This action is distributed under the MIT license, check the [license](LICENSE) for more info.
