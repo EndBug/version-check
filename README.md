@@ -48,6 +48,11 @@ Here's an example:
   run: 'echo "No version change :/"'
 ```
 
+### Publishing autom to both NPM & GitHub Package Registry
+
+If you want to see how to publish automatically your package to both NPM & GPR, please see [this](doc/auto-publish-example.yml) example workflow ;)
+You can also find a more in-depth guide in this [here](doc/auto-publish-walkthrough.md).
+
 ## Contributing
 
 If you want to contribute to the action, even by just raising a problem or proposing an idea, you can click [here](CONTRIBUTING.md) to find out how to do it ;)
