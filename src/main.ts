@@ -7,7 +7,8 @@ import semverRegex from 'semver-regex';
 
 const packageFileName = core.getInput('file-name') || 'package.json',
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
-  eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json'
+  eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json',
+  token = core.getInput('token')
 
 type ArgValue<T> =
   T extends 'changed' ? boolean :
@@ -39,7 +40,10 @@ function isPackageObj(value): value is PackageObj {
 
 async function getCommit(sha: string): Promise<CommitReponse> {
   let url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`
-  return (await axios.get(url)).data
+  let headers = token ? {
+    Authorization: `Bearer ${token}`
+  } : undefined
+  return (await axios.get(url, { headers })).data
 }
 interface CommitReponse {
   url: string
