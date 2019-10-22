@@ -12,7 +12,7 @@ You have to set up a step like this in your workflow (this assumes you've alread
 ```yaml
 - name: Check if version has been updated # You can edit this
     id: check # This will be the reference for getting the outputs
-    uses: EndBug/version-check@v1.0.1 # You can choose the version/branch you prefer
+    uses: EndBug/version-check@v1.1.0 # You can choose the version/branch you prefer
     with: # You can find more info about inputs below
       diff-search: true
       file-name: package.json
@@ -39,7 +39,7 @@ Here's an example:
 ```yaml
 - name: Check if version has been updated
   id: check
-  uses: EndBug/version-check@v1.0.1
+  uses: EndBug/version-check@v1.1.0
 
 - name: Log when changed
   if: steps.check.outputs.changed == 'true'
