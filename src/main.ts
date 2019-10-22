@@ -161,6 +161,7 @@ async function checkCommits(commits: Commit[], version: string) {
       }
     }
 
+    console.log('No matching commit found.')
     return false
   } catch (e) {
     throw e;
