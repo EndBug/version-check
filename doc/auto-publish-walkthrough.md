@@ -57,7 +57,7 @@ publish:
 ```
 
 ## 2. Detecting a version change  
-I didn't find a good way to do that so I made another action, [`version-check`][3]: this action scans the commits of every push and tries to figure out whether they include a version change.  
+I didn't find a good way to do that so I made another action, [`version-check`][3]: this action scans the commits of every push and tries to figure out whether they include a version change. Remeber to set eventual needed arguments/inputs!  
 You need to set up these two steps:
 
 ```yml
@@ -146,7 +146,7 @@ fs.writeFileSync(join(__dirname, '../package.json'), JSON.stringify(pkg))
   uses: actions/setup-node@v1.2.0
   with:
     registry-url: 'https://npm.pkg.github.com/'
-    scope: '@endbug'
+    scope: '@yourscope'
 
 - name: Set up the package for GPR
   if: steps.check.outputs.changed == 'true'

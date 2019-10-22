@@ -9,6 +9,9 @@ inputs:
   file-name:
     description: A custom path to the package.json file
     required: false
+  token:
+    description: A GitHub token to use when running on private repos
+    required: false
 
 outputs:
   changed:
