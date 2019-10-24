@@ -17,7 +17,7 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Compile TypeScript into JavaScript
+    - name: Compile TypeScript into compressed JavaScript
       run: npm run build
 
     - name: Commit changes
@@ -27,7 +27,7 @@ jobs:
         author_email: fgrandi30@gmail.com
         force: true
         message: '[auto] Update compiled version'
-        path: lib node_modules
-        pattern: '*.*'
+        path: lib
+        pattern: '*.js'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
