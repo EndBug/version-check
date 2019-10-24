@@ -4,7 +4,9 @@
   "description": "An action that allows you to check whether your npm package version has been updated",
   "main": "lib/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run compile && npm run compress && rm build/*.js",
+    "compile": "tsc",
+    "compress": "node-minify --compressor babel-minify --input build/*.js --output lib/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -31,6 +33,8 @@
     "semver-regex": "^3.1.0"
   },
   "devDependencies": {
+    "@node-minify/babel-minify": "^4.1.2",
+    "@node-minify/cli": "^4.1.2",
     "@types/node": "^12.7.12",
     "typescript": "^3.6.4"
   }
