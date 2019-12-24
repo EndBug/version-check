@@ -4,7 +4,7 @@
   "description": "An action that allows you to check whether your npm package version has been updated",
   "main": "lib/main.js",
   "scripts": {
-    "build": "npm run minify && npm run compress && rm build/*.js",
+    "build": "npm run compile && npm run minify && rm build/*.js",
     "compile": "tsc",
     "dist": "echo \"Preparing for distribution...\" && npm i --only=prod && git add -f node_modules && git commit -m \"Commit dist files\"",
     "minify": "minify build -d lib",
