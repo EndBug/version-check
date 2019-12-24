@@ -1,9 +1,9 @@
 import * as core from '@actions/core'
 import axios from 'axios'
-import { readFile } from "fs";
-import { join } from "path";
+import { readFile } from 'fs'
+import { join } from 'path'
 import semverDiff from 'semver-diff'
-import semverRegex from 'semver-regex';
+import semverRegex from 'semver-regex'
 
 const packageFileName = core.getInput('file-name') || 'package.json',
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
@@ -39,8 +39,8 @@ function isPackageObj(value): value is PackageObj {
 }
 
 async function getCommit(sha: string): Promise<CommitReponse> {
-  let url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`
-  let headers = token ? {
+  const url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`
+  const headers = token ? {
     Authorization: `Bearer ${token}`
   } : undefined
   return (await axios.get(url, { headers })).data
@@ -140,8 +140,8 @@ interface CommitReponse {
 
 async function checkCommits(commits: Commit[], version: string) {
   try {
-    for (let commit of commits) {
-      let match = commit.message.match(semverRegex()) || []
+    for (const commit of commits) {
+      const match = commit.message.match(semverRegex()) || []
       if (match.includes(version)) {
         if (await checkDiff(commit.id, version)) {
           console.log(`Found match for version ${version}: ${commit.id.substring(0, 7)} ${commit.message}`)
@@ -153,7 +153,7 @@ async function checkCommits(commits: Commit[], version: string) {
     if (core.getInput('diff-search')) {
       console.log('No standard npm version commit found, switching to diff search (this could take more time...)')
 
-      for (let commit of commits) {
+      for (const commit of commits) {
         if (await checkDiff(commit.id, version)) {
           console.log(`Found match for version ${version}: ${commit.id.substring(0, 7)} ${commit.message}`)
           return true
@@ -164,30 +164,30 @@ async function checkCommits(commits: Commit[], version: string) {
     console.log('No matching commit found.')
     return false
   } catch (e) {
-    throw e;
+    core.setFailed(e)
   }
 }
 
 async function checkDiff(sha: string, version: string) {
   try {
-    let commit = await getCommit(sha)
-    let pkg = commit.files.find(f => f.filename == packageFileName)
+    const commit = await getCommit(sha)
+    const pkg = commit.files.find(f => f.filename == packageFileName)
     if (!pkg) return false
 
-    let versionLines: {
+    const versionLines: {
       added?: string
       deleted?: string
     } = {}
 
-    let rawLines = pkg.patch.split('\n')
+    const rawLines = pkg.patch.split('\n')
       .filter(line => line.includes('"version":') && ['+', '-'].includes(line[0]))
     if (rawLines.length > 2) return false
 
-    for (let line of rawLines)
+    for (const line of rawLines)
       versionLines[line.startsWith('+') ? 'added' : 'deleted'] = line
     if (!versionLines.added) return false
 
-    let versions = {
+    const versions = {
       added: matchVersion(versionLines.added),
       deleted: !!versionLines.deleted && matchVersion(versionLines.deleted)
     }
@@ -222,25 +222,25 @@ async function processDirectory(dir: string, commits: Commit[]) {
       throw new Error('Can\'t find version field')
 
     if (commits.length >= 20)
-      console.warn('This worflow run topped the commit limit set by GitHub webhooks: that means that commits could not appear and that the run could not find the version change.');
+      console.warn('This worflow run topped the commit limit set by GitHub webhooks: that means that commits could not appear and that the run could not find the version change.')
 
     await checkCommits(commits, packageObj.version)
   } catch (e) {
-    throw e
+    core.setFailed(e)
   }
 }
 
 async function readJson(file: string) {
   const data: string = await new Promise((resolve, reject) =>
-    readFile(file, "utf8", (err, data) => {
+    readFile(file, 'utf8', (err, data) => {
       if (err) {
-        reject(err);
+        reject(err)
       } else {
-        resolve(data);
+        resolve(data)
       }
     })
-  );
-  return JSON.parse(data);
+  )
+  return JSON.parse(data)
 }
 
 function setOutput<T extends 'changed' | 'type'>(name: T, value: ArgValue<T>) {
@@ -252,8 +252,8 @@ class ExitError extends Error {
   code?: number
 
   constructor(code: number | null) {
-    super(`Command failed with code ${code}`);
-    if (typeof code == 'number') this.code = code;
+    super(`Command failed with code ${code}`)
+    if (typeof code == 'number') this.code = code
   }
 }
 
@@ -265,7 +265,7 @@ if (require.main == module) {
   main().catch(e => {
     if (e instanceof NeutralExitError) process.exitCode = 78
     else {
-      process.exitCode = 1;
+      process.exitCode = 1
       console.error(e.message || e)
     }
   })
