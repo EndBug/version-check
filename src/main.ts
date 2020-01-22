@@ -13,6 +13,7 @@ const packageFileName = core.getInput('file-name') || 'package.json',
 type ArgValue<T> =
   T extends 'changed' ? boolean :
   T extends 'type' ? string | undefined :
+  T extends 'version' ? string | undefined :
   never
 
 async function main() {
@@ -38,14 +39,14 @@ function isPackageObj(value): value is PackageObj {
   return !!value && !!value.version
 }
 
-async function getCommit(sha: string): Promise<CommitReponse> {
+async function getCommit(sha: string): Promise<CommitResponse> {
   const url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`
   const headers = token ? {
     Authorization: `Bearer ${token}`
   } : undefined
   return (await axios.get(url, { headers })).data
 }
-interface CommitReponse {
+interface CommitResponse {
   url: string
   sha: string
   node_id: string
@@ -122,7 +123,7 @@ interface CommitReponse {
   }[]
   stats: {
     additions: number
-    deleteions: number
+    deletions: number
     total: number
   }
   files: {
@@ -193,12 +194,13 @@ async function checkDiff(sha: string, version: string) {
     }
     if (versions.added != version) return false
 
-    await setOutput('changed', true)
+    setOutput('changed', true)
+    setOutput('version', version)
     if (versions.deleted)
-      await setOutput('type', semverDiff(versions.deleted, versions.added))
+      setOutput('type', semverDiff(versions.deleted, versions.added))
     return true
   } catch (e) {
-    console.error(`An error occured in checkDiff:\n${e}`)
+    console.error(`An error occurred in checkDiff:\n${e}`)
     throw new ExitError(1)
   }
 }
@@ -222,7 +224,7 @@ async function processDirectory(dir: string, commits: Commit[]) {
       throw new Error('Can\'t find version field')
 
     if (commits.length >= 20)
-      console.warn('This worflow run topped the commit limit set by GitHub webhooks: that means that commits could not appear and that the run could not find the version change.')
+      console.warn('This workflow run topped the commit limit set by GitHub webhooks: that means that commits could not appear and that the run could not find the version change.')
 
     await checkCommits(commits, packageObj.version)
   } catch (e) {
@@ -243,7 +245,7 @@ async function readJson(file: string) {
   return JSON.parse(data)
 }
 
-function setOutput<T extends 'changed' | 'type'>(name: T, value: ArgValue<T>) {
+function setOutput<T extends 'changed' | 'type' | 'version'>(name: T, value: ArgValue<T>) {
   return core.setOutput(name, `${value}`)
 }
 
