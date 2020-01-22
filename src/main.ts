@@ -13,6 +13,7 @@ const packageFileName = core.getInput('file-name') || 'package.json',
 type ArgValue<T> =
   T extends 'changed' ? boolean :
   T extends 'type' ? string | undefined :
+  T extends 'version' ? string | undefined :
   never
 
 async function main() {
@@ -194,6 +195,7 @@ async function checkDiff(sha: string, version: string) {
     if (versions.added != version) return false
 
     await setOutput('changed', true)
+    await setOutput('version', version)
     if (versions.deleted)
       await setOutput('type', semverDiff(versions.deleted, versions.added))
     return true
@@ -243,7 +245,7 @@ async function readJson(file: string) {
   return JSON.parse(data)
 }
 
-function setOutput<T extends 'changed' | 'type'>(name: T, value: ArgValue<T>) {
+function setOutput<T extends 'changed' | 'type' | 'version'>(name: T, value: ArgValue<T>) {
   return core.setOutput(name, `${value}`)
 }
 
