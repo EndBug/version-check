@@ -17,21 +17,21 @@ jobs:
 
     steps: 
     - name: Checkout repository
-      uses: actions/checkout@v1.0.0
+      uses: actions/checkout@v2
 
     - name: Set up Node.js
-      uses: actions/setup-node@v1.2.0
+      uses: actions/setup-node@v1
       with:
         node-version: '10.x'
     
     - name: Install dependencies
-      run: npm install
+      run: npm install --only=prod
 
     - name: Compile build
       run: npm run build # This can be whatever command you use to build your package
 
     - name: Commit changes
-      uses: EndBug/add-and-commit@v2.1.0
+      uses: EndBug/add-and-commit@v2
       with: # More info about the arguments on the action page
         author_name: Displayed name
         author_email: Displayed email
@@ -63,25 +63,25 @@ You need to set up these two steps:
 ```yml
 steps:
 - name: Checkout repository
-  uses: actions/checkout@v1.0.0
+  uses: actions/checkout@v2
   with:
     ref: master
 
 - name: Check version changes
-  uses: EndBug/version-check@v1.0.0 # More info about the arguments on the action page
+  uses: EndBug/version-check@v1 # More info about the arguments on the action page
   id: check # This will be the reference for later
 ```
 
 ## 3. Using the results of the check to edit the behavior of the workflow
 
-[`version-check`][3] provides two outputs: `changed` (whether there has been an update) and `type` (the type of update, like "patch", "minor", ...).  
+[`version-check`][3] provides three outputs: `changed` (whether there has been an update), `type` (the type of update, like "patch", "minor", ...) and `version` (the new version).  
 These outputs can be accessed through the [`steps` context][4] and you can use them to decide whether to run a step or not, using the [`if` property][5]. This is an example:
 
 ```yml
 # check is the id we gave to the check step in the previous paragraph
 - name: Version update detected
   if: steps.check.outputs.changed == 'true'
-  run: 'echo "Version change! -> ${{ steps.check.outputs.type }}"'
+  run: 'echo "Version change found! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
 ```
 
 ## 4. Publishing a package to NPM
@@ -92,7 +92,7 @@ In this example, I'll assume your secret is called `NPM_TOKEN`:
 ```yml
 - name: Set up Node.js for NPM
   if: steps.check.outputs.changed == 'true'
-  uses: actions/setup-node@v1.2.0
+  uses: actions/setup-node@v1
   with:
     registry-url: 'https://registry.npmjs.org' # This is just the default registry URL
 
@@ -143,7 +143,7 @@ fs.writeFileSync(join(__dirname, '../package.json'), JSON.stringify(pkg))
 ```yml
 - name: Set up Node.js for GPR
   if: steps.check.outputs.changed == 'true'
-  uses: actions/setup-node@v1.2.0
+  uses: actions/setup-node@v1
   with:
     registry-url: 'https://npm.pkg.github.com/'
     scope: '@yourscope'
