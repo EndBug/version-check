@@ -7,6 +7,7 @@
     "build": "npm run compile && npm run minify && rm build/*.js",
     "compile": "tsc",
     "dist": "echo \"Preparing for distribution...\" && npm i --only=prod && git add -f node_modules && git commit -m \"Commit dist files\"",
+    "lint": "eslint ./src --ext ts && echo 'Lint complete.'",
     "minify": "minify build -d lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
