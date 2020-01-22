@@ -31,9 +31,10 @@ This action sets two outputs:
 
 - `changed` : either "true" or "false", indicates whether the version has changed.
 - `type` : if the version has changed, it tries to find the type of bump (e.g. "patch", "minor", ...)
+- `version` : if the version has changed, it shows the nre version number (e.g. "1.0.2)
 
 To access these outputs, you need to access the context of the step you previously set up: you can find more info about steps contexts [here](https://help.github.com/en/articles/contexts-and-expression-syntax-for-github-actions#steps-context).  
-If you set your step id to `check` you'll find the outputs at `steps.check.outputs.changed` and `steps.check.outputs.type`: you can use these outputs as conditions for other steps.  
+If you set your step id to `check` you'll find the outputs at `steps.check.outputs.changed`, `steps.check.outputs.type` and `steps.check.outputs.version`: you can use these outputs as conditions for other steps.  
 Here's an example:
 
 ```yaml
@@ -44,6 +45,7 @@ Here's an example:
 - name: Log when changed
   if: steps.check.outputs.changed == 'true'
   run: 'echo "Version change! -> ${{ steps.check.outputs.type }}"'
+  run: 'echo "Version found! -> ${{ steps.check.outputs.version }}"'
 
 - name: Log when unchanged
   if: steps.check.outputs.changed != 'true'
