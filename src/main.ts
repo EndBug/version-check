@@ -206,7 +206,7 @@ async function checkDiff(sha: string, version: string) {
 }
 
 function matchVersion(str: string) {
-  return ((str.split(' ') || [])
+  return ((str.split('"') || [])
     .map(s => s.match(semverRegex()))
     .find(e => !!e) || [])[0]
 }
