@@ -17,8 +17,10 @@ type ArgValue<T> =
   never
 
 async function main() {
+  const extractCommits = cs => cs.map(c => c.commit)
   const eventObj = await readJson(eventFile)
-  return await processDirectory(dir, eventObj.commits)
+  const commits = eventObj.commits || extractCommits(await getCommits(eventObj.pull_request._links.commits.href))
+  return await processDirectory(dir, commits)
 }
 
 interface Commit {
@@ -37,6 +39,14 @@ interface PackageObj {
 }
 function isPackageObj(value): value is PackageObj {
   return !!value && !!value.version
+}
+
+async function getCommits(commitsUrl: string): Promise<CommitResponse[]> {
+  const headers = token ? {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github.v3+json'
+  } : undefined
+  return (await axios.get(commitsUrl, { headers })).data
 }
 
 async function getCommit(sha: string): Promise<CommitResponse> {
@@ -165,7 +175,7 @@ async function checkCommits(commits: Commit[], version: string) {
     console.log('No matching commit found.')
     return false
   } catch (e) {
-    core.setFailed(e)
+    core.setFailed(`${e}`)
   }
 }
 
@@ -228,7 +238,7 @@ async function processDirectory(dir: string, commits: Commit[]) {
 
     await checkCommits(commits, packageObj.version)
   } catch (e) {
-    core.setFailed(e)
+    core.setFailed(`${e}`)
   }
 }
 
