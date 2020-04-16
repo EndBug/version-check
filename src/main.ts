@@ -44,7 +44,7 @@ function isPackageObj(value): value is PackageObj {
 async function getCommits(commitsUrl: string): Promise<CommitResponse[]> {
   const headers = token ? {
     Authorization: `Bearer ${token}`,
-    Accept: 'application/vnd.github.v3+json'
+    // Accept: 'application/vnd.github.v3+json'
   } : undefined
   return (await axios.get(commitsUrl, { headers })).data
 }
