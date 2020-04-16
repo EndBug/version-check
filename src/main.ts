@@ -42,6 +42,7 @@ function isPackageObj(value): value is PackageObj {
 }
 
 async function getCommits(commitsUrl: string): Promise<CommitResponse[]> {
+  core.info('debug: using url: ' + commitsUrl)
   const headers = token ? {
     Authorization: `Bearer ${token}`,
     // Accept: 'application/vnd.github.v3+json'
