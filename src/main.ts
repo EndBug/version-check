@@ -17,13 +17,12 @@ type ArgValue<T> =
   never
 
 async function main() {
-  const extractCommits = cs => cs.map(c => c.commit)
   const eventObj = await readJson(eventFile)
-  const commits = eventObj.commits || extractCommits(await getCommits(eventObj.pull_request._links.commits.href))
+  const commits = eventObj.commits || await getCommits(eventObj.pull_request._links.commits.href)
   return await processDirectory(dir, commits)
 }
 
-interface Commit {
+interface LocalCommit {
   id: string
   message: string
   author: {
@@ -34,6 +33,10 @@ interface Commit {
   distinct: boolean
 }
 
+function isLocalCommit(value): value is LocalCommit {
+  return typeof value.id == 'string'
+}
+
 interface PackageObj {
   version: string
 }
@@ -41,7 +44,7 @@ function isPackageObj(value): value is PackageObj {
   return !!value && !!value.version
 }
 
-async function getCommits(commitsUrl: string): Promise<CommitResponse[]> {
+async function getCommits(commitsUrl: string): Promise<PartialCommitResponse[]> {
   core.info('debug: using url: ' + commitsUrl)
   const headers = token ? {
     Authorization: `Bearer ${token}`,
@@ -57,7 +60,21 @@ async function getCommit(sha: string): Promise<CommitResponse> {
   } : undefined
   return (await axios.get(url, { headers })).data
 }
-interface CommitResponse {
+
+interface CommitResponse extends PartialCommitResponse {
+  files: {
+    filename: string
+    additions: number
+    deletions: number
+    changes: number
+    status: string
+    raw_url: string
+    blob_url: string
+    patch: string
+  }[]
+}
+
+interface PartialCommitResponse {
   url: string
   sha: string
   node_id: string
@@ -137,26 +154,34 @@ interface CommitResponse {
     deletions: number
     total: number
   }
-  files: {
-    filename: string
-    additions: number
-    deletions: number
-    changes: number
-    status: string
-    raw_url: string
-    blob_url: string
-    patch: string
-  }[]
 }
 
+function getBasicInfo(commit: LocalCommit | PartialCommitResponse) {
+  let message: string,
+    sha: string
 
-async function checkCommits(commits: Commit[], version: string) {
+  if (isLocalCommit(commit)) {
+    message = commit.message
+    sha = commit.id
+  } else {
+    message = commit.commit.message
+    sha = commit.sha
+  }
+
+  return {
+    message,
+    sha
+  }
+}
+
+async function checkCommits(commits: LocalCommit[] | PartialCommitResponse[], version: string) {
   try {
     for (const commit of commits) {
-      const match = commit.message.match(semverRegex()) || []
+      const { message, sha } = getBasicInfo(commit)
+      const match = message.match(semverRegex()) || []
       if (match.includes(version)) {
-        if (await checkDiff(commit.id, version)) {
-          console.log(`Found match for version ${version}: ${commit.id.substring(0, 7)} ${commit.message}`)
+        if (await checkDiff(sha, version)) {
+          console.log(`Found match for version ${version}: ${sha.substring(0, 7)} ${message}`)
           return true
         }
       }
@@ -166,8 +191,10 @@ async function checkCommits(commits: Commit[], version: string) {
       console.log('No standard npm version commit found, switching to diff search (this could take more time...)')
 
       for (const commit of commits) {
-        if (await checkDiff(commit.id, version)) {
-          console.log(`Found match for version ${version}: ${commit.id.substring(0, 7)} ${commit.message}`)
+        const { message, sha } = getBasicInfo(commit)
+
+        if (await checkDiff(sha, version)) {
+          console.log(`Found match for version ${version}: ${sha.substring(0, 7)} ${message}`)
           return true
         }
       }
@@ -222,7 +249,7 @@ function matchVersion(str: string) {
     .find(e => !!e) || [])[0]
 }
 
-async function processDirectory(dir: string, commits: Commit[]) {
+async function processDirectory(dir: string, commits: LocalCommit[] | PartialCommitResponse[]) {
   try {
     const packageFile = join(dir, packageFileName),
       packageObj = await readJson(packageFile).catch(() => {
