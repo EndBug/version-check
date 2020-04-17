@@ -82,12 +82,12 @@ async function checkCommits(commits: LocalCommit[] | PartialCommitResponse[], ve
         )
       }
 
-      info(`Searching in ${commits.length} commits...`)
+      info(`Searching in ${commits.length} commit${commits.length == 1 ? '' : 's'}...`)
       for (const commit of commits) {
         const { message, sha } = getBasicInfo(commit)
 
         if (await checkDiff(sha, version)) {
-          info(`Found match for version ${version}: ${sha.substring(0, 7)} ${message}`)
+          info(`Found match for version ${version}: ${sha.substring(0, 7)} - ${message}`)
           return true
         }
       }
