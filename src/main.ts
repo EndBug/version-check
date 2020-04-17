@@ -80,6 +80,13 @@ async function checkCommits(commits: LocalCommit[] | PartialCommitResponse[], ve
     if (getInput('diff-search')) {
       info('No standard npm version commit found, switching to diff search (this could take more time...)')
 
+      if (!isLocalCommitArray(commits)) {
+        commits = commits.sort((a, b) =>
+          (new Date(b.commit.committer.date)).getTime() - (new Date(a.commit.committer.date)).getTime()
+        )
+      }
+
+      info(`Searching in ${commits.length} commits...`)
       for (const commit of commits) {
         const { message, sha } = getBasicInfo(commit)
 
@@ -218,6 +225,9 @@ interface LocalCommit {
 }
 function isLocalCommit(value): value is LocalCommit {
   return typeof value.id == 'string'
+}
+function isLocalCommitArray(value: any[]): value is LocalCommit[] {
+  return isLocalCommit(value[0])
 }
 
 interface PackageObj {
