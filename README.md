@@ -19,6 +19,8 @@ You have to set up a step like this in your workflow (this assumes you've alread
       token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+Please note that even if the action is built to be easier as possible to use, it is still subject to GitHub API's limits. That means that pushes and PRs that have a lot of commits may not show 100% of the commits. It is not something to worry about though, since the action has always worked in most of the cases ;)
+
 ### Inputs
 
 - `diff-search` (optional) : whether to search in every commit's diff. This is useful if you often do change the version manually without including it in the title: you can find more info on how the action detects the version change [here](doc/logic_chain.md). If you only use `npm version` to bump versions then you can omit this.
@@ -35,7 +37,7 @@ This action sets two outputs:
 - `commit` : if the version has changed, it shows the sha of the commit where the change has been found.
 
 To access these outputs, you need to access the context of the step you previously set up: you can find more info about steps contexts [here](https://help.github.com/en/articles/contexts-and-expression-syntax-for-github-actions#steps-context).  
-If you set your step id to `check` you'll find the outputs at `steps.check.outputs.changed`, `steps.check.outputs.type` and `steps.check.outputs.version`: you can use these outputs as conditions for other steps.  
+If you set your step id to `check` you'll find the outputs at `steps.check.outputs.OUTPUT_NAME`: you can use these outputs as conditions for other steps.  
 Here's an example:
 
 ```yaml
@@ -45,7 +47,7 @@ Here's an example:
 
 - name: Log when changed
   if: steps.check.outputs.changed == 'true'
-  run: 'echo "Version change found! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
+  run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
 
 - name: Log when unchanged
   if: steps.check.outputs.changed != 'true'
