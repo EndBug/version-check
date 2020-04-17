@@ -1,4 +1,4 @@
-import { getInput, setFailed, info, error, warning } from '@actions/core'
+import { getInput, setFailed, info, error, warning, setOutput } from '@actions/core'
 import axios from 'axios'
 import { readFile } from 'fs'
 import { join } from 'path'
@@ -147,10 +147,10 @@ async function checkDiff(sha: string, version: string) {
     }
     if (versions.added != version) return false
 
-    setOutput('changed', true)
-    setOutput('version', version)
+    output('changed', true)
+    output('version', version)
     if (versions.deleted)
-      setOutput('type', semverDiff(versions.deleted, versions.added))
+      output('type', semverDiff(versions.deleted, versions.added))
     return true
   } catch (e) {
     error(`An error occurred in checkDiff:\n${e}`)
@@ -169,8 +169,7 @@ function matchVersion(str: string) {
     .find(e => !!e) || [])[0]
 }
 
-function setOutput<T extends 'changed' | 'type' | 'version'>(name: T, value: ArgValue<T>) {
-  // @ts-ignore
+function output<T extends 'changed' | 'type' | 'version'>(name: T, value: ArgValue<T>) {
   return setOutput(name, `${value}`)
 }
 // #endregion
