@@ -20,6 +20,8 @@ outputs:
     description: The type of version change, if detectable (e.g. 'patch')
   version:
     description: The detected version number
+  commit:
+    description: The SHA of the commit where the version change has been detected
 
 runs:
   using: node12

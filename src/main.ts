@@ -10,11 +10,7 @@ const packageFileName = getInput('file-name') || 'package.json',
   eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json',
   token = getInput('token')
 
-type ArgValue<T> =
-  T extends 'changed' ? boolean :
-  T extends 'type' ? string | undefined :
-  T extends 'version' ? string | undefined :
-  never
+type outputKey = 'changed' | 'type' | 'version' | 'commit'
 
 // #region Functions
 async function main() {
@@ -169,7 +165,7 @@ function matchVersion(str: string) {
     .find(e => !!e) || [])[0]
 }
 
-function output<T extends 'changed' | 'type' | 'version'>(name: T, value: ArgValue<T>) {
+function output(name: outputKey, value?: string | boolean) {
   return setOutput(name, `${value}`)
 }
 // #endregion

@@ -32,6 +32,7 @@ This action sets two outputs:
 - `changed` : either "true" or "false", indicates whether the version has changed.
 - `type` : if the version has changed, it tries to find the type of bump (e.g. "patch", "minor", ...)
 - `version` : if the version has changed, it shows the version number (e.g. "1.0.2")
+- `commit` : if the version has changed, it shows the sha of the commit where the change has been found.
 
 To access these outputs, you need to access the context of the step you previously set up: you can find more info about steps contexts [here](https://help.github.com/en/articles/contexts-and-expression-syntax-for-github-actions#steps-context).  
 If you set your step id to `check` you'll find the outputs at `steps.check.outputs.changed`, `steps.check.outputs.type` and `steps.check.outputs.version`: you can use these outputs as conditions for other steps.  
