@@ -147,6 +147,7 @@ async function checkDiff(sha: string, version: string) {
     output('version', version)
     if (versions.deleted)
       output('type', semverDiff(versions.deleted, versions.added))
+    output('commit', commit.sha)
     return true
   } catch (e) {
     error(`An error occurred in checkDiff:\n${e}`)
