@@ -9,7 +9,7 @@ const packageFileName = normalize(getInput('file-name')) || 'package.json',
   packageFileURL = getInput('file-url') || '',
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
   eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json',
-  assumeSameVersion = getInput('assume-same-version') as 'old' | 'new',
+  assumeSameVersion = getInput('assume-same-version') as 'old' | 'new' | undefined,
   token = getInput('token')
 
 type outputKey = 'changed' | 'type' | 'version' | 'commit'
@@ -17,7 +17,7 @@ type outputKey = 'changed' | 'type' | 'version' | 'commit'
 // #region Functions
 async function main() {
   if (packageFileURL && !isURL(packageFileURL)) return setFailed(`The provided package file URL is not valid (received: ${packageFileURL})`)
-  if (!['old', 'new'].includes(assumeSameVersion)) return setFailed(`The provided assume-same-version parameter is not valid (received ${assumeSameVersion})`)
+  if (assumeSameVersion && !['old', 'new'].includes(assumeSameVersion)) return setFailed(`The provided assume-same-version parameter is not valid (received ${assumeSameVersion})`)
 
   const eventObj = await readJson(eventFile)
   const commits = eventObj.commits || await request(eventObj.pull_request._links.commits.href)
@@ -76,6 +76,7 @@ async function checkCommits(commits: LocalCommit[] | PartialCommitResponse[], ve
     info(`::group::Searching in ${commits.length} commit${commits.length == 1 ? '' : 's'}...`)
     info(`Package file name: "${packageFileName}"`)
     info(`Package file URL: ${packageFileURL ? `"${packageFileURL}"` : 'undefined'}`)
+    info(`Version assumptions: ${assumeSameVersion ? `"${assumeSameVersion}"` : 'undefined'}`)
     for (const commit of commits) {
       const { message, sha } = getBasicInfo(commit)
       const match = message.match(semverRegex()) || []
