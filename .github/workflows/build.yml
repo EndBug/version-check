@@ -31,7 +31,7 @@ jobs:
         uses: EndBug/add-and-commit@v4
         with:
           add: lib
-          message: "[auto] Update compiled version"
+          message: "[auto] build: update compiled version"
           force: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
