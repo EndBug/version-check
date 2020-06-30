@@ -19,7 +19,7 @@ async function main() {
   return await processDirectory(dir, commits)
 }
 
-async function readJson(file: string) {
+async function readJson(file: string, dir?: string) {
   let isURL = true
   try {
     new URL(file)
@@ -32,7 +32,7 @@ async function readJson(file: string) {
     if (typeof data == 'string') try { return JSON.parse(data) } catch { }
     if (typeof data == 'object') return data
   } else {
-    const data = readFileSync(file, { encoding: 'utf8' })
+    const data = readFileSync(dir ? join(dir, file) : file, { encoding: 'utf8' })
     if (typeof data == 'string') try { return JSON.parse(data) } catch { }
   }
 }
@@ -46,12 +46,11 @@ async function request(url: string) {
 
 async function processDirectory(dir: string, commits: LocalCommit[] | PartialCommitResponse[]) {
   try {
-    const packageFile = join(dir, packageFileName),
-      packageObj = await readJson(packageFile).catch(() => {
-        Promise.reject(
-          new NeutralExitError(`Package file not found: ${packageFile}`)
-        )
-      })
+    const packageObj = await readJson(packageFileName, dir).catch(() => {
+      Promise.reject(
+        new NeutralExitError(`Package file not found: ${packageFileName}`)
+      )
+    })
 
     if (!isPackageObj(packageObj))
       throw new Error('Can\'t find version field')
