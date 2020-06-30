@@ -168,7 +168,7 @@ async function checkDiff(sha: string, version: string) {
       added: assumeSameVersion == 'new' ? version : matchVersion(versionLines.added),
       deleted: assumeSameVersion == 'old' ? version : !!versionLines.deleted && matchVersion(versionLines.deleted)
     }
-    if (versions.added != version) {
+    if (versions.added != version && !assumeSameVersion) {
       info(`- ${sha.substr(0, 7)}: added version doesn't match current one (added: "${versions.added}"; current: "${version}")`)
       return false
     }
