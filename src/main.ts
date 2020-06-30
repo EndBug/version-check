@@ -6,6 +6,7 @@ import semverDiff from 'semver-diff'
 import semverRegex from 'semver-regex'
 
 const packageFileName = getInput('file-name') || 'package.json',
+  packageFileURL = getInput('file-url') || '',
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
   eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json',
   token = getInput('token')
@@ -14,25 +15,29 @@ type outputKey = 'changed' | 'type' | 'version' | 'commit'
 
 // #region Functions
 async function main() {
+  if (packageFileURL && !isURL(packageFileURL)) setFailed('The provided package file URL is not valid.')
+
   const eventObj = await readJson(eventFile)
   const commits = eventObj.commits || await request(eventObj.pull_request._links.commits.href)
   return await processDirectory(dir, commits)
 }
 
-async function readJson(file: string, dir?: string) {
-  let isURL = true
+function isURL(str: string) {
   try {
-    new URL(file)
+    new URL(str)
+    return true
   } catch {
-    isURL = false
+    return false
   }
+}
 
-  if (isURL) {
+async function readJson(file: string) {
+  if (isURL(file)) {
     const { data } = await axios.get(file)
     if (typeof data == 'string') try { return JSON.parse(data) } catch { }
     if (typeof data == 'object') return data
   } else {
-    const data = readFileSync(dir ? join(dir, file) : file, { encoding: 'utf8' })
+    const data = readFileSync(file, { encoding: 'utf8' })
     if (typeof data == 'string') try { return JSON.parse(data) } catch { }
   }
 }
@@ -46,7 +51,7 @@ async function request(url: string) {
 
 async function processDirectory(dir: string, commits: LocalCommit[] | PartialCommitResponse[]) {
   try {
-    const packageObj = await readJson(packageFileName, dir).catch(() => {
+    const packageObj = await (packageFileURL ? readJson(packageFileURL) : readJson(join(dir, packageFileName))).catch(() => {
       Promise.reject(
         new NeutralExitError(`Package file not found: ${packageFileName}`)
       )
@@ -66,16 +71,21 @@ async function processDirectory(dir: string, commits: LocalCommit[] | PartialCom
 
 async function checkCommits(commits: LocalCommit[] | PartialCommitResponse[], version: string) {
   try {
+    info(`::group::Searching in ${commits.length} commit${commits.length == 1 ? '' : 's'}...`)
+    info(`Package file name: "${packageFileName}"`)
+    info(`Package file URL: ${packageFileURL ? `"${packageFileURL}"` : 'undefined'}`)
     for (const commit of commits) {
       const { message, sha } = getBasicInfo(commit)
       const match = message.match(semverRegex()) || []
       if (match.includes(version)) {
         if (await checkDiff(sha, version)) {
+          info('::endgroup::')
           info(`Found match for version ${version}: ${sha.substring(0, 7)} ${message}`)
           return true
         }
       }
     }
+    info('::endgroup::')
 
     if (getInput('diff-search')) {
       info('No standard npm version commit found, switching to diff search (this could take more time...)')
@@ -86,17 +96,19 @@ async function checkCommits(commits: LocalCommit[] | PartialCommitResponse[], ve
         )
       }
 
-      info(`Searching in ${commits.length} commit${commits.length == 1 ? '' : 's'}...`)
+      info(`::group::Checking the diffs of ${commits.length} commit${commits.length == 1 ? '' : 's'}...`)
       for (const commit of commits) {
         const { message, sha } = getBasicInfo(commit)
 
         if (await checkDiff(sha, version)) {
+          info('::endgroup::')
           info(`Found match for version ${version}: ${sha.substring(0, 7)} - ${message}`)
           return true
         }
       }
     }
 
+    info('::endgroup::')
     info('No matching commit found.')
     return false
   } catch (e) {
@@ -126,7 +138,10 @@ async function checkDiff(sha: string, version: string) {
   try {
     const commit = await getCommit(sha)
     const pkg = commit.files.find(f => f.filename == packageFileName)
-    if (!pkg) return false
+    if (!pkg) {
+      info(`- ${sha.substr(0, 7)}: no changes to the package file`)
+      return false
+    }
 
     const versionLines: {
       added?: string
@@ -135,17 +150,26 @@ async function checkDiff(sha: string, version: string) {
 
     const rawLines = pkg.patch.split('\n')
       .filter(line => line.includes('"version":') && ['+', '-'].includes(line[0]))
-    if (rawLines.length > 2) return false
+    if (rawLines.length > 2) {
+      info(`- ${sha.substr(0, 7)}: too many version lines`)
+      return false
+    }
 
     for (const line of rawLines)
       versionLines[line.startsWith('+') ? 'added' : 'deleted'] = line
-    if (!versionLines.added) return false
+    if (!versionLines.added) {
+      info(`- ${sha.substr(0, 7)}: no "+ version" line`)
+      return false
+    }
 
     const versions = {
       added: matchVersion(versionLines.added),
       deleted: !!versionLines.deleted && matchVersion(versionLines.deleted)
     }
-    if (versions.added != version) return false
+    if (versions.added != version) {
+      info(`- ${sha.substr(0, 7)}: added version doesn't match current one (added: "${versions.added}"; current: "${version}")`)
+      return false
+    }
 
     output('changed', true)
     output('version', version)
