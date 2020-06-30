@@ -166,7 +166,7 @@ async function checkDiff(sha: string, version: string) {
       added: matchVersion(versionLines.added),
       deleted: !!versionLines.deleted && matchVersion(versionLines.deleted)
     }
-    if (versions.added != version && packageFileURL) {
+    if (versions.added != version && !packageFileURL) {
       info(`- ${sha.substr(0, 7)}: added version doesn't match current one (added: "${versions.added}"; current: "${version}")`)
       return false
     }
