@@ -32,7 +32,7 @@ async function readJson(file: string) {
     if (typeof data == 'string') try { return JSON.parse(data) } catch { }
     if (typeof data == 'object') return data
   } else {
-    const data = readFileSync(file)
+    const data = readFileSync(file, { encoding: 'utf8' })
     if (typeof data == 'string') try { return JSON.parse(data) } catch { }
   }
 }
