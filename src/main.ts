@@ -9,13 +9,15 @@ const packageFileName = normalize(getInput('file-name')) || 'package.json',
   packageFileURL = getInput('file-url') || '',
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
   eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json',
+  assumeSameVersion = getInput('assume-same-version') as 'old' | 'new',
   token = getInput('token')
 
 type outputKey = 'changed' | 'type' | 'version' | 'commit'
 
 // #region Functions
 async function main() {
-  if (packageFileURL && !isURL(packageFileURL)) setFailed('The provided package file URL is not valid.')
+  if (packageFileURL && !isURL(packageFileURL)) return setFailed(`The provided package file URL is not valid (received: ${packageFileURL})`)
+  if (!['old', 'new'].includes(assumeSameVersion)) return setFailed(`The provided assume-same-version parameter is not valid (received ${assumeSameVersion})`)
 
   const eventObj = await readJson(eventFile)
   const commits = eventObj.commits || await request(eventObj.pull_request._links.commits.href)
@@ -163,10 +165,10 @@ async function checkDiff(sha: string, version: string) {
     }
 
     const versions = {
-      added: matchVersion(versionLines.added),
-      deleted: !!versionLines.deleted && matchVersion(versionLines.deleted)
+      added: assumeSameVersion == 'new' ? version : matchVersion(versionLines.added),
+      deleted: assumeSameVersion == 'old' ? version : !!versionLines.deleted && matchVersion(versionLines.deleted)
     }
-    if (versions.added != version && !packageFileURL) {
+    if (versions.added != version) {
       info(`- ${sha.substr(0, 7)}: added version doesn't match current one (added: "${versions.added}"; current: "${version}")`)
       return false
     }
