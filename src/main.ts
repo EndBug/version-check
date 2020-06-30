@@ -1,6 +1,6 @@
 import { getInput, setFailed, info, error, warning, setOutput } from '@actions/core'
 import axios from 'axios'
-import { readFile } from 'fs'
+import { readFileSync } from 'fs'
 import { join } from 'path'
 import semverDiff from 'semver-diff'
 import semverRegex from 'semver-regex'
@@ -20,16 +20,21 @@ async function main() {
 }
 
 async function readJson(file: string) {
-  const data: string = await new Promise((resolve, reject) =>
-    readFile(file, 'utf8', (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(data)
-      }
-    })
-  )
-  return JSON.parse(data)
+  let isURL = true
+  try {
+    new URL(file)
+  } catch {
+    isURL = false
+  }
+
+  if (isURL) {
+    const { data } = await axios.get(file)
+    if (typeof data == 'string') try { return JSON.parse(data) } catch { }
+    if (typeof data == 'object') return data
+  } else {
+    const data = readFileSync(file)
+    if (typeof data == 'string') try { return JSON.parse(data) } catch { }
+  }
 }
 
 async function request(url: string) {
