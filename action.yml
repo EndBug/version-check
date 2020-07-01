@@ -15,6 +15,9 @@ inputs:
   assume-same-version:
     description: Whether to use the version fetched from the package file as the old one or the new one (instead of looking at the diffs)
     required: false
+  static-checking:
+    description: Whether to check the package from the file-url against the local package, instead of running the usual checks
+    required: false
   token:
     description: A GitHub token to use when running on private repos
     required: false

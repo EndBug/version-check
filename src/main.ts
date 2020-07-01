@@ -10,6 +10,7 @@ const packageFileName = normalize(getInput('file-name')) || 'package.json',
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
   eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json',
   assumeSameVersion = getInput('assume-same-version') as 'old' | 'new' | undefined,
+  staticChecking = getInput('static-checking') as 'localIsNew' | 'remoteIsNew' | undefined,
   token = getInput('token')
 
 type outputKey = 'changed' | 'type' | 'version' | 'commit'
@@ -18,10 +19,34 @@ type outputKey = 'changed' | 'type' | 'version' | 'commit'
 async function main() {
   if (packageFileURL && !isURL(packageFileURL)) return setFailed(`The provided package file URL is not valid (received: ${packageFileURL})`)
   if (assumeSameVersion && !['old', 'new'].includes(assumeSameVersion)) return setFailed(`The provided assume-same-version parameter is not valid (received ${assumeSameVersion})`)
+  if (staticChecking && !['localIsNew', 'remoteIsNew'].includes(staticChecking)) return setFailed(`The provided static-checking parameter is not valid (received ${staticChecking})`)
 
-  const eventObj = await readJson(eventFile)
-  const commits = eventObj.commits || await request(eventObj.pull_request._links.commits.href)
-  return await processDirectory(dir, commits)
+  if (staticChecking) {
+    if (!packageFileURL) return setFailed('Static checking cannot be performed without a `file-url` argument.')
+
+    info('::group::Static-checking files...')
+    info(`Package file name: "${packageFileName}"`)
+    info(`Package file URL: "${packageFileURL}"`)
+    const local: string = (await readJson(join(dir, packageFileName)))?.version,
+      remote: string = (await readJson(packageFileURL))?.version
+    if (!local || !remote) {
+      info('::endgroup::')
+      return setFailed(`Couldn't find ${local ? 'local' : 'remote'} version.`)
+    }
+
+    if ((local.match(semverRegex()) || [])[0] != (remote.match(semverRegex()) || [])[0]) {
+      output('changed', true)
+      output('version', staticChecking == 'localIsNew' ? local : remote)
+      output('type', staticChecking == 'localIsNew' ? semverDiff(remote, local) : semverDiff(local, remote))
+
+      info('::endgroup::')
+      info(`Found match for version ${staticChecking == 'localIsNew' ? local : remote}`)
+    }
+  } else {
+    const eventObj = await readJson(eventFile)
+    const commits = eventObj.commits || await request(eventObj.pull_request._links.commits.href)
+    return processDirectory(dir, commits)
+  }
 }
 
 function isURL(str: string) {
@@ -166,8 +191,8 @@ async function checkDiff(sha: string, version: string) {
     }
 
     const versions = {
-      added: assumeSameVersion == 'new' ? version : matchVersion(versionLines.added),
-      deleted: assumeSameVersion == 'old' ? version : !!versionLines.deleted && matchVersion(versionLines.deleted)
+      added: assumeSameVersion == 'new' ? version : parseVersionLine(versionLines.added),
+      deleted: assumeSameVersion == 'old' ? version : !!versionLines.deleted && parseVersionLine(versionLines.deleted)
     }
     if (versions.added != version && !assumeSameVersion) {
       info(`- ${sha.substr(0, 7)}: added version doesn't match current one (added: "${versions.added}"; current: "${version}")`)
@@ -177,12 +202,11 @@ async function checkDiff(sha: string, version: string) {
     output('changed', true)
     output('version', version)
     if (versions.deleted)
-      output('type', semverDiff(versions.deleted, versions.added))
+      output('type', semverDiff(versions.deleted, versions.added as string))
     output('commit', commit.sha)
-    {
-      info(`- ${sha.substr(0, 7)}: match found, more info below`)
-      return true
-    }
+
+    info(`- ${sha.substr(0, 7)}: match found, more info below`)
+    return true
   } catch (e) {
     error(`An error occurred in checkDiff:\n${e}`)
     throw new ExitError(1)
@@ -194,10 +218,14 @@ async function getCommit(sha: string): Promise<CommitResponse> {
   return request(url)
 }
 
-function matchVersion(str: string) {
-  return ((str.split('"') || [])
-    .map(s => s.match(semverRegex()))
-    .find(e => !!e) || [])[0]
+function parseVersionLine(str: string) {
+  return (str.split('"') || [])
+    .map(s => matchVersion(s))
+    .find(e => !!e)
+}
+
+function matchVersion(str: string): string {
+  return (str.match(semverRegex()) || [])[0]
 }
 
 function output(name: outputKey, value?: string | boolean) {

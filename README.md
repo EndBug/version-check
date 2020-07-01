@@ -13,12 +13,14 @@ You have to set up a step like this in your workflow (this assumes you've alread
 - name: Check if version has been updated # You can edit this
     id: check # This will be the reference for getting the outputs
     uses: EndBug/version-check@v1 # You can choose the version/branch you prefer
-    with: # You can find more info about inputs below
+    with: # You can find more info about inputs below, these ones are just an example
       diff-search: true
       file-name: package.json
+      token: ${{ secrets.GITHUB_TOKEN }}
+      # "Advanced" options
       file-url: https://unpkg.com/pkg/package.json
       assume-same-version: old
-      token: ${{ secrets.GITHUB_TOKEN }}
+      static-checking: localIsNew
 ```
 
 Please note that even if the action is built to be easier as possible to use, it is still subject to GitHub API's limits. That means that pushes and PRs that have a lot of commits may not show 100% of the commits. It is not something to worry about though, since the action has always worked in most of the cases ;)
@@ -29,6 +31,7 @@ Please note that even if the action is built to be easier as possible to use, it
 - `file-name` (optional) : you can use this to indicate a custom path to your `package.json`; if you keep your package file in the root directory (as every normal person would do) you can omit this.
 - `file-url` (optional) : you can use this to make the action use an URL to get the package file; this makes it possible to check the version changes against, for example, the latest published version on NPM (using unpkg.com) or a specific commit from GitHub (using the data from `https://raw.githubusercontent.com/user/repo/commit-sha/file-path`). If you leave this blank the action will get the file from your repo. Please note that the action will expect the version from that package file to be the same as the one that has been added in the commit: if you want to change this behavior take a look at the `assume-same-version` option.
 - `assume-same-version` (optional) : you can use this option to make the action use the package version (either from the repo file or from the URL provided in `file-url`) as either the added (changed by the commit) or deleted (the one before the commit) version; to do this you can set this option to either `new` (added version) or `old` (deleted version). This may be useful if you want to get the difference between the version introduced by the commit and the latest version of your package on NPM: in this case you would need to set the `file-url` to get the latest published version and `assume-same-version` to `old` (it will be like if your previous version was the one from the package).
+- `static-checking` (optional) : you can use this option to make the action only check the local version with the remote version (fecthed from the URL in the `file-url` parameter); you need to set it either to `localIsNew` (if you expect your local version to be newer than the one from the URL) or to `remoteIsNew`
 - `token` (optional) : you can put your bearer GitHub token here. This is needed only when running the action on private repostiories, if you're running it on a public repo you can omit this. If you need to set this, you can use the built-in `GITHUB_TOKEN` secret that GitHub generates for your repo's actions: you cna find more info about it [here](https://help.github.com/en/github/automating-your-workflow-with-github-actions/virtual-environments-for-github-actions#github_token-secret).
 
 ### Outputs
