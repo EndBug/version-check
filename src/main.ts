@@ -5,7 +5,7 @@ import { join, normalize } from 'path'
 import semverDiff from 'semver-diff'
 import semverRegex from 'semver-regex'
 
-const packageFileName = normalize(getInput('file-name')) || 'package.json',
+const packageFileName = normalize(getInput('file-name') || 'package.json'),
   packageFileURL = getInput('file-url') || '',
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
   eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json',
