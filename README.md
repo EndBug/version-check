@@ -75,10 +75,28 @@ Here's an example:
 
 Please keep in mind that when the `static-checking` option is used the `commit` output is not given.
 
+## Examples
+
 ### Publishing automatically to both NPM & GitHub Package Registry
 
-If you want to see how to publish automatically your package to both NPM & GPR, please see [this](doc/auto-publish-example.yml) example workflow ;)
+If you want to see how to publish automatically your package to both NPM & GPR, please see [this](doc/auto-publish-example.yml) example workflow ;)  
 You can also find a more in-depth guide in this [here](doc/auto-publish-walkthrough.md).
+
+### Static-checking with your latest version on NPM
+
+If you want to cehck whether the version has changed since your last published version on NPM, you can do it using `file-url` and `static-checking`:
+- `file-url`: you need to use something like a raw.githubusercontent.com or unpkg.com URL, an API that will give you a JSON response with your package file.
+- `static-checking`: you're expecting your last published version to be older than the one in your repo, so we'll use `localIsNew`
+
+```yaml
+- id: check
+  uses: EndBug/version-check@v1
+  with:
+    file-url: https://unpkg.com/your-package@latest/package.json
+    static-checking: localIsNew
+```
+
+This step will have a `true` `changed` output every time our version is newer (there won't be any `commit` output)
 
 ## Contributing
 

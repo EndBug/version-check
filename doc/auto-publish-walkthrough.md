@@ -72,6 +72,8 @@ steps:
   id: check # This will be the reference for later
 ```
 
+You could also use the `static-check` and `file-url` option to detect teh version change, but if more checks run at the same time this can make it try to publish it multiple times.
+
 ## 3. Using the results of the check to edit the behavior of the workflow
 
 [`version-check`][3] provides three outputs: `changed` (whether there has been an update), `type` (the type of update, like "patch", "minor", ...) and `version` (the new version).  
