@@ -10,29 +10,43 @@ This action is heavily inspired by [`npm-publish-action`](https://github.com/pas
 You have to set up a step like this in your workflow (this assumes you've already [checked out](https://github.com/actions/checkout) your repo and [set up Node](https://github.com/actions/setup-node)):
 
 ```yaml
-- name: Check if version has been updated # You can edit this
-    id: check # This will be the reference for getting the outputs
-    uses: EndBug/version-check@v1 # You can choose the version/branch you prefer
-    with: # You can find more info about inputs below, these ones are just an example
-      diff-search: true
-      file-name: package.json
-      token: ${{ secrets.GITHUB_TOKEN }}
-      # "Advanced" options
-      file-url: https://unpkg.com/pkg/package.json
-      assume-same-version: old
-      static-checking: localIsNew
+- id: check # This will be the reference for getting the outputs.
+  uses: EndBug/version-check@v1 # You can choose the version/branch you prefer.
+  
+  with: # All these parameters are optional, check their descriptions to see if you need them.
+
+    # Whether to search in every commit's diff. 
+    # This is useful if you often do change the version manually without including it in the title. If you only use `npm version` to bump versions then you can omit this.
+    # Default: false
+    diff-search: true
+
+    # You can use this to indicate a custom path to your `package.json`. If you keep your package file in the root directory (as every normal person would do) you can omit this.
+    # Default: package.json
+    file-name: ./your/own/dir/someName.json
+
+    # You can put your bearer GitHub token here. This is needed only when running the action on private repostiories, if you're running it on a public repo you can omit this.
+    # If you need to set this, you can use the built-in `GITHUB_TOKEN` secret that GitHub generates for your repo's actions: you cna find more info about it here: https://help.github.com/en/github/automating-your-workflow-with-github-actions/virtual-environments-for-github-actions#github_token-secret
+    # Default: ''
+    token: ${{ secrets.GITHUB_TOKEN }}
+
+    # You can use this to make the action use an URL to get the package file, instead of using the one in your repo. 
+    # Please note that the action will expect the version from that package file to be the same as the one that has been added in the commit: if you want to change this behavior take a look at the `assume-same-version` option.
+    # Default: ''
+    file-url: https://unpkg.com/pkg/package.json
+
+    # You can use this to make the action use the current version (either from the local file or the provided URL, see the `file-url` option) as either the added or deleted version.
+    # Accepted values are 'new' (if you want that version to be the "added" one) and 'old' (to make it the "deleted" one).
+    # Default: ''
+    assume-same-version: old
+
+    # You can use this option to make the action check the local version against the remote one (from the provided URL, see the `file-url` option).
+    # Accepted values are 'localIsNew' (if you expect the local version to be newer than the remote one) and `remoteIsNew`.
+    # Please note that using the wrong value may make the action detect the change but fail to identify the type.
+    # Default: ''
+    static-checking: localIsNew
 ```
 
 Please note that even if the action is built to be easier as possible to use, it is still subject to GitHub API's limits. That means that pushes and PRs that have a lot of commits may not show 100% of the commits. It is not something to worry about though, since the action has always worked in most of the cases ;)
-
-### Inputs
-
-- `diff-search` (optional) : whether to search in every commit's diff. This is useful if you often do change the version manually without including it in the title: you can find more info on how the action detects the version change [here](doc/logic_chain.md). If you only use `npm version` to bump versions then you can omit this.
-- `file-name` (optional) : you can use this to indicate a custom path to your `package.json`; if you keep your package file in the root directory (as every normal person would do) you can omit this.
-- `file-url` (optional) : you can use this to make the action use an URL to get the package file; this makes it possible to check the version changes against, for example, the latest published version on NPM (using unpkg.com) or a specific commit from GitHub (using the data from `https://raw.githubusercontent.com/user/repo/commit-sha/file-path`). If you leave this blank the action will get the file from your repo. Please note that the action will expect the version from that package file to be the same as the one that has been added in the commit: if you want to change this behavior take a look at the `assume-same-version` option.
-- `assume-same-version` (optional) : you can use this option to make the action use the package version (either from the repo file or from the URL provided in `file-url`) as either the added (changed by the commit) or deleted (the one before the commit) version; to do this you can set this option to either `new` (added version) or `old` (deleted version). This may be useful if you want to get the difference between the version introduced by the commit and the latest version of your package on NPM: in this case you would need to set the `file-url` to get the latest published version and `assume-same-version` to `old` (it will be like if your previous version was the one from the package).
-- `static-checking` (optional) : you can use this option to make the action only check the local version with the remote version (fecthed from the URL in the `file-url` parameter); you need to set it either to `localIsNew` (if you expect your local version to be newer than the one from the URL) or to `remoteIsNew`: confusing the two options may lead to the action detecting the change, but failing to report version and type correctly.
-- `token` (optional) : you can put your bearer GitHub token here. This is needed only when running the action on private repostiories, if you're running it on a public repo you can omit this. If you need to set this, you can use the built-in `GITHUB_TOKEN` secret that GitHub generates for your repo's actions: you cna find more info about it [here](https://help.github.com/en/github/automating-your-workflow-with-github-actions/virtual-environments-for-github-actions#github_token-secret).
 
 ### Outputs
 
@@ -58,6 +72,8 @@ Here's an example:
   if: steps.check.outputs.changed != 'true'
   run: 'echo "No version change :/"'
 ```
+
+Please keep in mind that when the `static-checking` option is used the `commit` output is not given.
 
 ### Publishing automatically to both NPM & GitHub Package Registry
 
