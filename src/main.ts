@@ -6,12 +6,13 @@ import semverDiff from 'semver-diff'
 import semverRegex from 'semver-regex'
 
 const packageFileName = normalize(getInput('file-name') || 'package.json'),
-  packageFileURL = getInput('file-url') || '',
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
   eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json',
   assumeSameVersion = getInput('assume-same-version') as 'old' | 'new' | undefined,
   staticChecking = getInput('static-checking') as 'localIsNew' | 'remoteIsNew' | undefined,
   token = getInput('token')
+
+let  packageFileURL = getInput('file-url') || ''
 
 type outputKey = 'changed' | 'type' | 'version' | 'commit'
 
@@ -20,6 +21,15 @@ async function main() {
   if (packageFileURL && !isURL(packageFileURL)) return setFailed(`The provided package file URL is not valid (received: ${packageFileURL})`)
   if (assumeSameVersion && !['old', 'new'].includes(assumeSameVersion)) return setFailed(`The provided assume-same-version parameter is not valid (received ${assumeSameVersion})`)
   if (staticChecking && !['localIsNew', 'remoteIsNew'].includes(staticChecking)) return setFailed(`The provided static-checking parameter is not valid (received ${staticChecking})`)
+
+  if (packageFileURL == '::before') {
+    const event = await readJson(eventFile)
+    if (!event) throw new Error(`Can't find event file (${eventFile})`)
+
+    const {before, repository} = event
+    if (before && repository) packageFileURL = `https://raw.githubusercontent.com/${repository?.full_name}/${before}/${packageFileName}`
+    else throw new Error(`Can't correctly read event file (before: ${before}, repository: ${repository})`)
+  }
 
   if (staticChecking) {
     if (!packageFileURL) return setFailed('Static checking cannot be performed without a `file-url` argument.')
