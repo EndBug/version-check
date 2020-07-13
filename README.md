@@ -1,6 +1,6 @@
 # Version check
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 You can use this GitHub action to check whether your npm package version has been updated: this can be extremely helpful if you want to automate your release process.  
@@ -120,6 +120,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/larskinn"><img src="https://avatars1.githubusercontent.com/u/910569?v=4" width="100px;" alt=""/><br /><sub><b>Lars Kinn Ekroll</b></sub></a><br /><a href="https://github.com/EndBug/version-check/issues?q=author%3Alarskinn" title="Bug reports">🐛</a></td>
     <td align="center"><a href="http://www.hsalazar.xyz"><img src="https://avatars1.githubusercontent.com/u/4967271?v=4" width="100px;" alt=""/><br /><sub><b>Humberto</b></sub></a><br /><a href="https://github.com/EndBug/version-check/commits?author=hsalazr" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/hmehta"><img src="https://avatars3.githubusercontent.com/u/108334?v=4" width="100px;" alt=""/><br /><sub><b>Heikki Mehtänen</b></sub></a><br /><a href="https://github.com/EndBug/version-check/commits?author=hmehta" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/CJY0208"><img src="https://avatars1.githubusercontent.com/u/18415774?v=4" width="100px;" alt=""/><br /><sub><b>CJY</b></sub></a><br /><a href="#ideas-CJY0208" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
