@@ -1,6 +1,6 @@
 {
   "projectName": "version-check",
-  "projectOwner": "Federico Grandi",
+  "projectOwner": "EndBug",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
@@ -19,7 +19,17 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "sergeyzwezdin",
+      "name": "Sergey Zwezdin",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/800755?v=4",
+      "profile": "https://blog.zwezdin.com/",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }
