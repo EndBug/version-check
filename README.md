@@ -119,7 +119,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/EndBug"><img src="https://avatars1.githubusercontent.com/u/26386270?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Federico Grandi</b></sub></a><br /><a href="https://github.com/Federico Grandi/version-check/commits?author=EndBug" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/EndBug"><img src="https://avatars1.githubusercontent.com/u/26386270?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Federico Grandi</b></sub></a><br /><a href="https://github.com/Federico Grandi/version-check/commits?author=EndBug" title="Code">💻</a> <a href="https://github.com/Federico Grandi/version-check/commits?author=EndBug" title="Documentation">📖</a></td>
   </tr>
 </table>
 
