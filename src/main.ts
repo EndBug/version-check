@@ -12,13 +12,14 @@ const packageFileName = normalize(getInput('file-name') || 'package.json'),
   staticChecking = getInput('static-checking') as 'localIsNew' | 'remoteIsNew' | undefined,
   token = getInput('token')
 
-let packageFileURL = getInput('file-url') || ''
+let packageFileURL = (getInput('file-url') || '').trim()
+const allowedTags = ['::before']
 
 type outputKey = 'changed' | 'type' | 'version' | 'commit'
 
 // #region Functions
 async function main() {
-  if (packageFileURL && !isURL(packageFileURL)) return setFailed(`The provided package file URL is not valid (received: ${packageFileURL})`)
+  if (packageFileURL && (!isURL(packageFileURL) && !allowedTags.includes(packageFileURL))) return setFailed(`The provided package file URL is not valid (received: ${packageFileURL})`)
   if (assumeSameVersion && !['old', 'new'].includes(assumeSameVersion)) return setFailed(`The provided assume-same-version parameter is not valid (received ${assumeSameVersion})`)
   if (staticChecking && !['localIsNew', 'remoteIsNew'].includes(staticChecking)) return setFailed(`The provided static-checking parameter is not valid (received ${staticChecking})`)
 
