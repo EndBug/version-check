@@ -46,6 +46,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "hmehta",
+      "name": "Heikki Mehtänen",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/108334?v=4",
+      "profile": "https://github.com/hmehta",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
