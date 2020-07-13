@@ -1,5 +1,7 @@
 # Contributing
 
+By contributing in any way you can get added to the list in the [README](README.md)!
+
 ### Issues
 If you have a problem with this action and/or want a new feature to be added, please open a new issue from [here](https://github.com/EndBug/version-check/issues/new/choose).  
 You will be prompted to choose a template: if none of the templates describes your kind of issue, you can always create a normal one.

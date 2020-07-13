@@ -106,10 +106,6 @@ This step will have a `true` `changed` output every time our version is newer (t
 
 If you want to contribute to the action, even by just raising a problem or proposing an idea, you can click [here](CONTRIBUTING.md) to find out how to do it ;)
 
-## License
-
-This action is distributed under the MIT license, check the [license](LICENSE) for more info.
-
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -128,3 +124,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+## License
+
+This action is distributed under the MIT license, check the [license](LICENSE) for more info.
