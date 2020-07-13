@@ -31,6 +31,7 @@ You have to set up a step like this in your workflow (this assumes you've alread
 
     # You can use this to make the action use an URL to get the package file, instead of using the one in your repo. 
     # Please note that the action will expect the version from that package file to be the same as the one that has been added in the commit: if you want to change this behavior take a look at the `assume-same-version` option.
+    # You can also set this to '::before', and the action will use the file from before the push event.
     # Default: ''
     file-url: https://unpkg.com/pkg/package.json
 
