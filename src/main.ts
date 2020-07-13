@@ -12,7 +12,7 @@ const packageFileName = normalize(getInput('file-name') || 'package.json'),
   staticChecking = getInput('static-checking') as 'localIsNew' | 'remoteIsNew' | undefined,
   token = getInput('token')
 
-let  packageFileURL = getInput('file-url') || ''
+let packageFileURL = getInput('file-url') || ''
 
 type outputKey = 'changed' | 'type' | 'version' | 'commit'
 
@@ -26,9 +26,15 @@ async function main() {
     const event = await readJson(eventFile)
     if (!event) throw new Error(`Can't find event file (${eventFile})`)
 
-    const {before, repository} = event
-    if (before && repository) packageFileURL = `https://raw.githubusercontent.com/${repository?.full_name}/${before}/${packageFileName}`
-    else throw new Error(`Can't correctly read event file (before: ${before}, repository: ${repository})`)
+    const { before, repository } = event
+    if (before && repository) {
+      packageFileURL = `https://raw.githubusercontent.com/${repository?.full_name}/${before}/${packageFileName}`
+      info('::group::URL tag resolution...')
+      info(`::before tag resolved to ${repository?.full_name}/${String(before).substr(0, 7)}/${packageFileName}`)
+      info(`Current package file URL: ${packageFileURL}`)
+      info('::endgroup::')
+    } else
+      throw new Error(`Can't correctly read event file (before: ${before}, repository: ${repository})`)
   }
 
   if (staticChecking) {
