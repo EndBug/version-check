@@ -1,6 +1,6 @@
 # Version check
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 You can use this GitHub action to check whether your npm package version has been updated: this can be extremely helpful if you want to automate your release process.  
@@ -115,7 +115,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/EndBug"><img src="https://avatars1.githubusercontent.com/u/26386270?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Federico Grandi</b></sub></a><br /><a href="https://github.com/Federico Grandi/version-check/commits?author=EndBug" title="Code">💻</a> <a href="https://github.com/Federico Grandi/version-check/commits?author=EndBug" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/EndBug"><img src="https://avatars1.githubusercontent.com/u/26386270?v=4" width="100px;" alt=""/><br /><sub><b>Federico Grandi</b></sub></a><br /><a href="https://github.com/EndBug/version-check/commits?author=EndBug" title="Code">💻</a> <a href="https://github.com/EndBug/version-check/commits?author=EndBug" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://blog.zwezdin.com/"><img src="https://avatars2.githubusercontent.com/u/800755?v=4" width="100px;" alt=""/><br /><sub><b>Sergey Zwezdin</b></sub></a><br /><a href="#ideas-sergeyzwezdin" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
