@@ -78,11 +78,11 @@ function isURL(str: string) {
 async function readJson(file: string) {
   if (isURL(file)) {
     const { data } = await axios.get(file)
-    if (typeof data == 'string') try { return JSON.parse(data) } catch { }
+    if (typeof data == 'string') try { return JSON.parse(data) } catch (e) { error(e) }
     if (typeof data == 'object') return data
   } else {
     const data = readFileSync(file, { encoding: 'utf8' })
-    if (typeof data == 'string') try { return JSON.parse(data) } catch { }
+    if (typeof data == 'string') try { return JSON.parse(data) } catch (e) { error(e) }
   }
 }
 
