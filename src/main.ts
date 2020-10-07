@@ -23,7 +23,9 @@ async function main() {
   if (assumeSameVersion && !['old', 'new'].includes(assumeSameVersion)) return setFailed(`The provided assume-same-version parameter is not valid (received ${assumeSameVersion})`)
   if (staticChecking && !['localIsNew', 'remoteIsNew'].includes(staticChecking)) return setFailed(`The provided static-checking parameter is not valid (received ${staticChecking})`)
 
-  if (packageFileURL == '::before') {
+  const isPackageFileURLBefore = packageFileURL === '::before'
+
+  if (isPackageFileURLBefore) {
     const event = await readJson(eventFile)
     if (!event) throw new Error(`Can't find event file (${eventFile})`)
 
@@ -46,7 +48,7 @@ async function main() {
     info(`Package file name: "${packageFileName}"`)
     info(`Package file URL: "${packageFileURL}"`)
     const local: string = (await readJson(join(dir, packageFileName)))?.version,
-      remote: string = (await readJson(packageFileURL, token))?.version
+      remote: string = (await readJson(packageFileURL, isPackageFileURLBefore && token ? token : undefined))?.version
     if (!local || !remote) {
       info('::endgroup::')
       return setFailed(`Couldn't find ${local ? 'local' : 'remote'} version.`)
