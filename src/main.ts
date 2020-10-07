@@ -45,7 +45,7 @@ async function main() {
     info(`Package file name: "${packageFileName}"`)
     info(`Package file URL: "${packageFileURL}"`)
     const local: string = (await readJson(join(dir, packageFileName)))?.version,
-      remote: string = (await readJson(packageFileURL))?.version
+      remote: string = (await readJson(packageFileURL, token))?.version
     if (!local || !remote) {
       info('::endgroup::')
       return setFailed(`Couldn't find ${local ? 'local' : 'remote'} version.`)
@@ -75,9 +75,12 @@ function isURL(str: string) {
   }
 }
 
-async function readJson(file: string) {
+async function readJson(file: string, token?: string) {
   if (isURL(file)) {
-    const { data } = await axios.get(file)
+    const headers = token ? {
+      Authorization: `Bearer ${token}`
+    } : undefined
+    const { data } = await axios.get(file, { headers })
     if (typeof data == 'string') try { return JSON.parse(data) } catch (e) { error(e instanceof Error ? (e.stack || e.message) : e + '') }
     if (typeof data == 'object') return data
   } else {
