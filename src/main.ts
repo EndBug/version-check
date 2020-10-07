@@ -33,6 +33,7 @@ async function main() {
       info('::group::URL tag resolution...')
       info(`::before tag resolved to ${repository?.full_name}/${String(before).substr(0, 7)}/${packageFileName}`)
       info(`Current package file URL: ${packageFileURL}`)
+      info(`Using token: ${!!token}`)
       info('::endgroup::')
     } else
       throw new Error(`Can't correctly read event file (before: ${before}, repository: ${repository})`)
@@ -80,8 +81,6 @@ async function readJson(file: string, token?: string) {
     const headers = token ? {
       Authorization: `Bearer ${token}`
     } : undefined
-
-    console.log(headers);
     const { data } = await axios.get(file, { headers })
     if (typeof data == 'string') try { return JSON.parse(data) } catch (e) { error(e instanceof Error ? (e.stack || e.message) : e + '') }
     if (typeof data == 'object') return data
