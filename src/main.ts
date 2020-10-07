@@ -80,6 +80,8 @@ async function readJson(file: string, token?: string) {
     const headers = token ? {
       Authorization: `Bearer ${token}`
     } : undefined
+
+    console.log(headers);
     const { data } = await axios.get(file, { headers })
     if (typeof data == 'string') try { return JSON.parse(data) } catch (e) { error(e instanceof Error ? (e.stack || e.message) : e + '') }
     if (typeof data == 'object') return data
