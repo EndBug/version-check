@@ -33,7 +33,7 @@ async function main() {
       info('::group::URL tag resolution...')
       info(`::before tag resolved to ${repository?.full_name}/${String(before).substr(0, 7)}/${packageFileName}`)
       info(`Current package file URL: ${packageFileURL}`)
-      info(`Using token: ${!!token}`)
+      info(`Using token for remote url: ${!!token}`)
       info('::endgroup::')
     } else
       throw new Error(`Can't correctly read event file (before: ${before}, repository: ${repository})`)
