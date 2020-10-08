@@ -81,7 +81,7 @@ function isURL(str: string) {
 async function readJson(file: string, token?: string) {
   if (isURL(file)) {
     const headers = token ? {
-      Authorization: `Bearer ${token}`
+      Authorization: `token ${token}`
     } : undefined
     const { data } = await axios.get(file, { headers })
     if (typeof data == 'string') try { return JSON.parse(data) } catch (e) { error(e instanceof Error ? (e.stack || e.message) : e + '') }
