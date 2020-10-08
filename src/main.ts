@@ -23,7 +23,9 @@ async function main() {
   if (assumeSameVersion && !['old', 'new'].includes(assumeSameVersion)) return setFailed(`The provided assume-same-version parameter is not valid (received ${assumeSameVersion})`)
   if (staticChecking && !['localIsNew', 'remoteIsNew'].includes(staticChecking)) return setFailed(`The provided static-checking parameter is not valid (received ${staticChecking})`)
 
-  if (packageFileURL == '::before') {
+  const isPackageFileURLBefore = packageFileURL === '::before'
+
+  if (isPackageFileURLBefore) {
     const event = await readJson(eventFile)
     if (!event) throw new Error(`Can't find event file (${eventFile})`)
 
@@ -33,6 +35,7 @@ async function main() {
       info('::group::URL tag resolution...')
       info(`::before tag resolved to ${repository?.full_name}/${String(before).substr(0, 7)}/${packageFileName}`)
       info(`Current package file URL: ${packageFileURL}`)
+      info(`Using token for remote url: ${!!token}`)
       info('::endgroup::')
     } else
       throw new Error(`Can't correctly read event file (before: ${before}, repository: ${repository})`)
@@ -45,7 +48,7 @@ async function main() {
     info(`Package file name: "${packageFileName}"`)
     info(`Package file URL: "${packageFileURL}"`)
     const local: string = (await readJson(join(dir, packageFileName)))?.version,
-      remote: string = (await readJson(packageFileURL))?.version
+      remote: string = (await readJson(packageFileURL, isPackageFileURLBefore && token ? token : undefined))?.version
     if (!local || !remote) {
       info('::endgroup::')
       return setFailed(`Couldn't find ${local ? 'local' : 'remote'} version.`)
@@ -75,9 +78,12 @@ function isURL(str: string) {
   }
 }
 
-async function readJson(file: string) {
+async function readJson(file: string, token?: string) {
   if (isURL(file)) {
-    const { data } = await axios.get(file)
+    const headers = token ? {
+      Authorization: `token ${token}`
+    } : undefined
+    const { data } = await axios.get(file, { headers })
     if (typeof data == 'string') try { return JSON.parse(data) } catch (e) { error(e instanceof Error ? (e.stack || e.message) : e + '') }
     if (typeof data == 'object') return data
   } else {
