@@ -1,9 +1,9 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: bug
-assignees: EndBug
+about: Report something that isn't working as expected
+title: "[Bug]"
+labels: 'status: pending'
+assignees: ''
 
 ---
 
