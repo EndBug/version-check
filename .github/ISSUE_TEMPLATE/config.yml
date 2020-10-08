@@ -2,4 +2,4 @@ blank_issues_enabled: false
 contact_links:
   - name: Security issues
     url: https://github.com/EndBug
-    about: Please report security vulnerabilities here.
+    about: For security vulnerabilities, please contact me in private
