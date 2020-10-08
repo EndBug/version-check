@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security issues
-    url: mailto:fgrandi30@gmail.com
+    url: https://github.com/EndBug
     about: Please report security vulnerabilities here.
