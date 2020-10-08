@@ -73,6 +73,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "AlexRex",
+      "name": "Alex Torres",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2911626?v=4",
+      "profile": "http://alextorres.me",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
