@@ -4,26 +4,29 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 You can use this GitHub action to check whether your npm package version has been updated: this can be extremely helpful if you want to automate your release process.  
+
 The main difference between this action and many others out there is that this doesn't do a specific task (it doesn't publish to registries, create tags or releases, send notifications, ...) but instead gives you an output that you can use in other steps of your workflow as you prefer: this way you don't have to deal with stuff you don't care about ;)
 
 This action is heavily inspired by [`npm-publish-action`](https://github.com/pascalgn/npm-publish-action) by [pascal](https://github.com/pascalgn): if you only care about publishing your package to npm automatically, this is the simplest solution :thumbsup:  
 
 ## Usage
 
-You have to set up a step like this in your workflow (this assumes you've already [checked out](https://github.com/actions/checkout) your repo and [set up Node](https://github.com/actions/setup-node)):
+### GitHub Workflow
+
+You have to set up a step like this in your GitHub workflow file (eg. `.github/workflows/release-management.yml`), assuming you've already [checked out](https://github.com/actions/checkout) your repo:
 
 ```yaml
 - id: check # This will be the reference for getting the outputs.
   uses: EndBug/version-check@v1 # You can choose the version/branch you prefer.
-  
+
   with: # All these parameters are optional, check their descriptions to see if you need them.
 
     # Whether to search in every commit's diff. 
-    # This is useful if you often do change the version manually without including it in the title. If you only use `npm version` to bump versions then you can omit this.
+    # This is useful if you often do change the version without saying it in the commit message. If you always include new version number in your commit message to bump versions then you can omit this.
     # Default: false
     diff-search: true
 
-    # You can use this to indicate a custom path to your `package.json`. If you keep your package file in the root directory (as every normal person would do) you can omit this.
+    # You can use this to indicate a custom path to your `package.json`. If you keep your package file in the root directory (which is the usual approach) you can omit this.
     # Default: package.json
     file-name: ./your/own/dir/someName.json
 
@@ -50,14 +53,16 @@ You have to set up a step like this in your workflow (this assumes you've alread
     static-checking: localIsNew
 ```
 
+Now, when someone changes the version in `package.json` to `1.2.3` and pushes a commit with the message `<WHATEVER> 1.2.3` (eg. `Release 1.2.3` or `Bump version to v1.2.3`), output values are set (see Outputs below). Otherwise, no output is provided.
+
 Please note that even if the action is built to be easier as possible to use, it is still subject to GitHub API's limits. That means that pushes and PRs that have a lot of commits may not show 100% of the commits. It is not something to worry about though, since the action has always worked in most of the cases ;)
 
 ### Outputs
 
-- `changed` : either "true" or "false", indicates whether the version has changed.
-- `type` : if the version has changed, it tries to find the type of bump (e.g. "patch", "minor", ...)
-- `version` : if the version has changed, it shows the version number (e.g. "1.0.2")
-- `commit` : if the version has changed, it shows the sha of the commit where the change has been found.
+- `changed`: either "true" or "false", indicates whether the version has changed.
+- `type`: if the version has changed, it tries to find the type of bump (e.g. "patch", "minor", ...)
+- `version`: if the version has changed, it shows the version number (e.g. "1.0.2")
+- `commit`: if the version has changed, it shows the sha of the commit where the change has been found.
 
 To access these outputs, you need to access the context of the step you previously set up: you can find more info about steps contexts [here](https://help.github.com/en/articles/contexts-and-expression-syntax-for-github-actions#steps-context).  
 If you set your step id to `check` you'll find the outputs at `steps.check.outputs.OUTPUT_NAME`: you can use these outputs as conditions for other steps.  
@@ -88,7 +93,7 @@ You can also find a more in-depth guide in this [here](doc/auto-publish-walkthro
 
 ### Static-checking with your latest version on NPM
 
-If you want to cehck whether the version has changed since your last published version on NPM, you can do it using `file-url` and `static-checking`:
+If you want to check whether the version has changed since your last published version on NPM, you can do it using `file-url` and `static-checking`:
 - `file-url`: you need to use something like a raw.githubusercontent.com or unpkg.com URL, an API that will give you a JSON response with your package file.
 - `static-checking`: you're expecting your last published version to be older than the one in your repo, so we'll use `localIsNew`
 
@@ -100,7 +105,7 @@ If you want to cehck whether the version has changed since your last published v
     static-checking: localIsNew
 ```
 
-This step will have a `true` `changed` output every time our version is newer (there won't be any `commit` output)
+This step will have a `true` `changed` output every time our version is newer (there won't be any `commit` output).
 
 ## Contributing
 
