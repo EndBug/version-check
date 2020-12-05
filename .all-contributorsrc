@@ -82,6 +82,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "adamkudrna",
+      "name": "Adam Kudrna",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5614085?v=4",
+      "profile": "https://www.adamkudrna.cz",
+      "contributions": [
+        "ideas",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
