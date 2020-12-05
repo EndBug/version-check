@@ -22,7 +22,7 @@ You have to set up a step like this in your GitHub workflow file (eg. `.github/w
   with: # All these parameters are optional, check their descriptions to see if you need them.
 
     # Whether to search in every commit's diff. 
-    # This is useful if you often do change the version without saying it in the commit message. If you always include new version number in your commit message to bump versions then you can omit this.
+    # This is useful if you often do change the version without saying it in the commit message. If you always include the semver of the new version in your commit message when you bump versions then you can omit this.
     # Default: false
     diff-search: true
 
