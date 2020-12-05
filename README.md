@@ -3,7 +3,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-You can use this GitHub action to check whether your npm package version has been updated: this can be extremely helpful if you want to automate your release process.  
+You can use this GitHub action to check whether your npm package version has been updated: this can be extremely helpful if you want to automate your release process.
 
 The main difference between this action and many others out there is that this doesn't do a specific task (it doesn't publish to registries, create tags or releases, send notifications, ...) but instead gives you an output that you can use in other steps of your workflow as you prefer: this way you don't have to deal with stuff you don't care about ;)
 
@@ -13,7 +13,7 @@ This action is heavily inspired by [`npm-publish-action`](https://github.com/pas
 
 ### GitHub Workflow
 
-You have to set up a step like this in your GitHub workflow file (eg. `.github/workflows/release-management.yml`), assuming you've already [checked out](https://github.com/actions/checkout) your repo:
+You have to set up a step like this in your workflow (this assumes you've already [checked out](https://github.com/actions/checkout) your repo and [set up Node](https://github.com/actions/setup-node)):
 
 ```yaml
 - id: check # This will be the reference for getting the outputs.
@@ -35,7 +35,7 @@ You have to set up a step like this in your GitHub workflow file (eg. `.github/w
     # Default: ''
     token: ${{ secrets.GITHUB_TOKEN }}
 
-    # You can use this to make the action use an URL to get the package file, instead of using the one in your repo. 
+    # You can use this to make the action use an URL to get the package file, instead of using the one in your repo.
     # Please note that the action will expect the version from that package file to be the same as the one that has been added in the commit: if you want to change this behavior take a look at the `assume-same-version` option.
     # You can also set this to '::before', and the action will use the file from before the push event.
     # Default: ''
@@ -53,7 +53,7 @@ You have to set up a step like this in your GitHub workflow file (eg. `.github/w
     static-checking: localIsNew
 ```
 
-Now, when someone changes the version in `package.json` to `1.2.3` and pushes a commit with the message `<WHATEVER> 1.2.3` (eg. `Release 1.2.3` or `Bump version to v1.2.3`), output values are set (see Outputs below). Otherwise, no output is provided.
+Now, when someone changes the version in `package.json` to `1.2.3` and pushes a commit with the message `<WHATEVER> 1.2.3` (eg. `Release 1.2.3` or `Bump version to v1.2.3`), output values are set (see Outputs below).
 
 Please note that even if the action is built to be easier as possible to use, it is still subject to GitHub API's limits. That means that pushes and PRs that have a lot of commits may not show 100% of the commits. It is not something to worry about though, since the action has always worked in most of the cases ;)
 
