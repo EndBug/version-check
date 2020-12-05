@@ -78,7 +78,7 @@ Here's an example:
   run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
 
 - name: Log when unchanged
-  if: steps.check.outputs.changed != 'true'
+  if: steps.check.outputs.changed == 'false'
   run: 'echo "No version change :/"'
 ```
 
