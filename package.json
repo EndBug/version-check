@@ -4,7 +4,7 @@
   "description": "An action that allows you to check whether your npm package version has been updated",
   "main": "lib/main.js",
   "scripts": {
-    "build": "npm i && ncc build src/main.ts --out lib",
+    "build": "npm i && ncc build src/main.ts --minify --out lib",
     "watch": "ncc build src/main.ts --watch --out lib",
     "lint": "eslint ./src --ext ts && echo 'Lint complete.'",
     "lintfix": "eslint ./src --ext ts --fix && echo \"Lint & fix complete.\"",
