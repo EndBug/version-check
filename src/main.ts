@@ -114,6 +114,11 @@ async function processDirectory(dir: string, commits: LocalCommit[] | PartialCom
     if (commits.length >= 20)
       warning('This workflow run topped the commit limit set by GitHub webhooks: that means that commits could not appear and that the run could not find the version change.')
 
+    if (commits.length <= 0) {
+      info('There are no commits to look at.')
+      return
+    }
+
     await checkCommits(commits, packageObj.version)
   } catch (e) {
     setFailed(`${e}`)
