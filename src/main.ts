@@ -124,8 +124,6 @@ async function main() {
       (await request(eventObj.pull_request._links.commits.href))
     await processDirectory(dir, commits)
   }
-
-  logOutputs()
 }
 
 function isURL(str: string) {
@@ -418,11 +416,7 @@ if (require.main == module) {
         output('changed', false)
       }
 
-      startGroup('Outputs')
-      Object.entries(outputs).forEach(([key, value]) => {
-        info(`${key}: ${value}`)
-      })
-      endGroup()
+      logOutputs()
     })
     .catch((e) => {
       if (e instanceof NeutralExitError) process.exitCode = 78
