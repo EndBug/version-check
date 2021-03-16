@@ -66,8 +66,10 @@ async function main() {
   } else {
     const eventObj = await readJson(eventFile)
     const commits = eventObj.commits || await request(eventObj.pull_request._links.commits.href)
-    return processDirectory(dir, commits)
+    await processDirectory(dir, commits)
   }
+
+  logOutputs()
 }
 
 function isURL(str: string) {
@@ -261,6 +263,14 @@ function matchVersion(str: string): string {
 function output(name: outputKey, value?: string | boolean) {
   outputs[name] = value
   return setOutput(name, `${value}`)
+}
+
+function logOutputs() {
+  startGroup('Outputs:')
+  for (const key in outputs) {
+    info(`${key}: ${outputs[key]}`)
+  }
+  endGroup()
 }
 // #endregion
 
