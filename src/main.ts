@@ -1,4 +1,13 @@
-import { getInput, setFailed, info, error, warning, setOutput, startGroup, endGroup } from '@actions/core'
+import {
+  getInput,
+  setFailed,
+  info,
+  error,
+  warning,
+  setOutput,
+  startGroup,
+  endGroup
+} from '@actions/core'
 import axios from 'axios'
 import { readFileSync } from 'fs'
 import { join, normalize } from 'path'
@@ -8,8 +17,14 @@ import semverRegex from 'semver-regex'
 const packageFileName = normalize(getInput('file-name') || 'package.json'),
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
   eventFile = process.env.GITHUB_EVENT_PATH || '/github/workflow/event.json',
-  assumeSameVersion = getInput('assume-same-version') as 'old' | 'new' | undefined,
-  staticChecking = getInput('static-checking') as 'localIsNew' | 'remoteIsNew' | undefined,
+  assumeSameVersion = getInput('assume-same-version') as
+    | 'old'
+    | 'new'
+    | undefined,
+  staticChecking = getInput('static-checking') as
+    | 'localIsNew'
+    | 'remoteIsNew'
+    | undefined,
   token = getInput('token')
 
 let packageFileURL = (getInput('file-url') || '').trim()
@@ -20,9 +35,22 @@ const outputs: Partial<Record<outputKey, string | boolean>> = {}
 
 // #region Functions
 async function main() {
-  if (packageFileURL && (!isURL(packageFileURL) && !allowedTags.includes(packageFileURL))) return setFailed(`The provided package file URL is not valid (received: ${packageFileURL})`)
-  if (assumeSameVersion && !['old', 'new'].includes(assumeSameVersion)) return setFailed(`The provided assume-same-version parameter is not valid (received ${assumeSameVersion})`)
-  if (staticChecking && !['localIsNew', 'remoteIsNew'].includes(staticChecking)) return setFailed(`The provided static-checking parameter is not valid (received ${staticChecking})`)
+  if (
+    packageFileURL &&
+    !isURL(packageFileURL) &&
+    !allowedTags.includes(packageFileURL)
+  )
+    return setFailed(
+      `The provided package file URL is not valid (received: ${packageFileURL})`
+    )
+  if (assumeSameVersion && !['old', 'new'].includes(assumeSameVersion))
+    return setFailed(
+      `The provided assume-same-version parameter is not valid (received ${assumeSameVersion})`
+    )
+  if (staticChecking && !['localIsNew', 'remoteIsNew'].includes(staticChecking))
+    return setFailed(
+      `The provided static-checking parameter is not valid (received ${staticChecking})`
+    )
 
   const isPackageFileURLBefore = packageFileURL === '::before'
 
@@ -34,38 +62,66 @@ async function main() {
     if (before && repository) {
       packageFileURL = `https://raw.githubusercontent.com/${repository?.full_name}/${before}/${packageFileName}`
       startGroup('URL tag resolution...')
-      info(`::before tag resolved to ${repository?.full_name}/${String(before).substr(0, 7)}/${packageFileName}`)
+      info(
+        `::before tag resolved to ${repository?.full_name}/${String(
+          before
+        ).substr(0, 7)}/${packageFileName}`
+      )
       info(`Current package file URL: ${packageFileURL}`)
       info(`Using token for remote url: ${!!token}`)
       endGroup()
     } else
-      throw new Error(`Can't correctly read event file (before: ${before}, repository: ${repository})`)
+      throw new Error(
+        `Can't correctly read event file (before: ${before}, repository: ${repository})`
+      )
   }
 
   if (staticChecking) {
-    if (!packageFileURL) return setFailed('Static checking cannot be performed without a `file-url` argument.')
+    if (!packageFileURL)
+      return setFailed(
+        'Static checking cannot be performed without a `file-url` argument.'
+      )
 
     startGroup('Static-checking files...')
     info(`Package file name: "${packageFileName}"`)
     info(`Package file URL: "${packageFileURL}"`)
     const local: string = (await readJson(join(dir, packageFileName)))?.version,
-      remote: string = (await readJson(packageFileURL, isPackageFileURLBefore && token ? token : undefined))?.version
+      remote: string = (
+        await readJson(
+          packageFileURL,
+          isPackageFileURLBefore && token ? token : undefined
+        )
+      )?.version
     if (!local || !remote) {
       endGroup()
       return setFailed(`Couldn't find ${local ? 'local' : 'remote'} version.`)
     }
 
-    if ((local.match(semverRegex()) || [])[0] != (remote.match(semverRegex()) || [])[0]) {
+    if (
+      (local.match(semverRegex()) || [])[0] !=
+      (remote.match(semverRegex()) || [])[0]
+    ) {
       output('changed', true)
       output('version', staticChecking == 'localIsNew' ? local : remote)
-      output('type', staticChecking == 'localIsNew' ? semverDiff(remote, local) : semverDiff(local, remote))
+      output(
+        'type',
+        staticChecking == 'localIsNew'
+          ? semverDiff(remote, local)
+          : semverDiff(local, remote)
+      )
 
       endGroup()
-      info(`Found match for version ${staticChecking == 'localIsNew' ? local : remote}`)
+      info(
+        `Found match for version ${
+          staticChecking == 'localIsNew' ? local : remote
+        }`
+      )
     }
   } else {
     const eventObj = await readJson(eventFile)
-    const commits = eventObj.commits || await request(eventObj.pull_request._links.commits.href)
+    const commits =
+      eventObj.commits ||
+      (await request(eventObj.pull_request._links.commits.href))
     await processDirectory(dir, commits)
   }
 
@@ -83,38 +139,59 @@ function isURL(str: string) {
 
 async function readJson(file: string, token?: string) {
   if (isURL(file)) {
-    const headers = token ? {
-      Authorization: `token ${token}`
-    } : undefined
+    const headers = token
+      ? {
+          Authorization: `token ${token}`
+        }
+      : undefined
     const { data } = await axios.get(file, { headers })
-    if (typeof data == 'string') try { return JSON.parse(data) } catch (e) { error(e instanceof Error ? (e.stack || e.message) : e + '') }
+    if (typeof data == 'string')
+      try {
+        return JSON.parse(data)
+      } catch (e) {
+        error(e instanceof Error ? e.stack || e.message : e + '')
+      }
     if (typeof data == 'object') return data
   } else {
     const data = readFileSync(file, { encoding: 'utf8' })
-    if (typeof data == 'string') try { return JSON.parse(data) } catch (e) { error(e instanceof Error ? (e.stack || e.message) : e + '') }
+    if (typeof data == 'string')
+      try {
+        return JSON.parse(data)
+      } catch (e) {
+        error(e instanceof Error ? e.stack || e.message : e + '')
+      }
   }
 }
 
 async function request(url: string) {
-  const headers = token ? {
-    Authorization: `Bearer ${token}`
-  } : undefined
+  const headers = token
+    ? {
+        Authorization: `Bearer ${token}`
+      }
+    : undefined
   return (await axios.get(url, { headers })).data
 }
 
-async function processDirectory(dir: string, commits: LocalCommit[] | PartialCommitResponse[]) {
+async function processDirectory(
+  dir: string,
+  commits: LocalCommit[] | PartialCommitResponse[]
+) {
   try {
-    const packageObj = await (packageFileURL ? readJson(packageFileURL) : readJson(join(dir, packageFileName))).catch(() => {
+    const packageObj = await (packageFileURL
+      ? readJson(packageFileURL)
+      : readJson(join(dir, packageFileName))
+    ).catch(() => {
       Promise.reject(
         new NeutralExitError(`Package file not found: ${packageFileName}`)
       )
     })
 
-    if (!isPackageObj(packageObj))
-      throw new Error('Can\'t find version field')
+    if (!isPackageObj(packageObj)) throw new Error("Can't find version field")
 
     if (commits.length >= 20)
-      warning('This workflow run topped the commit limit set by GitHub webhooks: that means that commits could not appear and that the run could not find the version change.')
+      warning(
+        'This workflow run topped the commit limit set by GitHub webhooks: that means that commits could not appear and that the run could not find the version change.'
+      )
 
     if (commits.length <= 0) {
       info('There are no commits to look at.')
@@ -127,19 +204,39 @@ async function processDirectory(dir: string, commits: LocalCommit[] | PartialCom
   }
 }
 
-async function checkCommits(commits: LocalCommit[] | PartialCommitResponse[], version: string) {
+async function checkCommits(
+  commits: LocalCommit[] | PartialCommitResponse[],
+  version: string
+) {
   try {
-    startGroup(`Searching in ${commits.length} commit${commits.length == 1 ? '' : 's'}...`)
+    startGroup(
+      `Searching in ${commits.length} commit${
+        commits.length == 1 ? '' : 's'
+      }...`
+    )
     info(`Package file name: "${packageFileName}"`)
-    info(`Package file URL: ${packageFileURL ? `"${packageFileURL}"` : 'undefined'}`)
-    info(`Version assumptions: ${assumeSameVersion ? `"${assumeSameVersion}"` : 'undefined'}`)
+    info(
+      `Package file URL: ${
+        packageFileURL ? `"${packageFileURL}"` : 'undefined'
+      }`
+    )
+    info(
+      `Version assumptions: ${
+        assumeSameVersion ? `"${assumeSameVersion}"` : 'undefined'
+      }`
+    )
     for (const commit of commits) {
       const { message, sha } = getBasicInfo(commit)
       const match = message.match(semverRegex()) || []
       if (match.includes(version)) {
         if (await checkDiff(sha, version)) {
           endGroup()
-          info(`Found match for version ${version}: ${sha.substring(0, 7)} ${message}`)
+          info(
+            `Found match for version ${version}: ${sha.substring(
+              0,
+              7
+            )} ${message}`
+          )
           return true
         }
       }
@@ -147,21 +244,34 @@ async function checkCommits(commits: LocalCommit[] | PartialCommitResponse[], ve
     endGroup()
 
     if (getInput('diff-search')) {
-      info('No standard npm version commit found, switching to diff search (this could take more time...)')
+      info(
+        'No standard npm version commit found, switching to diff search (this could take more time...)'
+      )
 
       if (!isLocalCommitArray(commits)) {
-        commits = commits.sort((a, b) =>
-          (new Date(b.commit.committer.date)).getTime() - (new Date(a.commit.committer.date)).getTime()
+        commits = commits.sort(
+          (a, b) =>
+            new Date(b.commit.committer.date).getTime() -
+            new Date(a.commit.committer.date).getTime()
         )
       }
 
-      startGroup(`Checking the diffs of ${commits.length} commit${commits.length == 1 ? '' : 's'}...`)
+      startGroup(
+        `Checking the diffs of ${commits.length} commit${
+          commits.length == 1 ? '' : 's'
+        }...`
+      )
       for (const commit of commits) {
         const { message, sha } = getBasicInfo(commit)
 
         if (await checkDiff(sha, version)) {
           endGroup()
-          info(`Found match for version ${version}: ${sha.substring(0, 7)} - ${message}`)
+          info(
+            `Found match for version ${version}: ${sha.substring(
+              0,
+              7
+            )} - ${message}`
+          )
           return true
         }
       }
@@ -177,8 +287,7 @@ async function checkCommits(commits: LocalCommit[] | PartialCommitResponse[], ve
 }
 
 function getBasicInfo(commit: LocalCommit | PartialCommitResponse) {
-  let message: string,
-    sha: string
+  let message: string, sha: string
 
   if (isLocalCommit(commit)) {
     message = commit.message
@@ -197,7 +306,7 @@ function getBasicInfo(commit: LocalCommit | PartialCommitResponse) {
 async function checkDiff(sha: string, version: string) {
   try {
     const commit = await getCommit(sha)
-    const pkg = commit.files.find(f => f.filename == packageFileName)
+    const pkg = commit.files.find((f) => f.filename == packageFileName)
     if (!pkg) {
       info(`- ${sha.substr(0, 7)}: no changes to the package file`)
       return false
@@ -208,8 +317,11 @@ async function checkDiff(sha: string, version: string) {
       deleted?: string
     } = {}
 
-    const rawLines = pkg.patch.split('\n')
-      .filter(line => line.includes('"version":') && ['+', '-'].includes(line[0]))
+    const rawLines = pkg.patch
+      .split('\n')
+      .filter(
+        (line) => line.includes('"version":') && ['+', '-'].includes(line[0])
+      )
     if (rawLines.length > 2) {
       info(`- ${sha.substr(0, 7)}: too many version lines`)
       return false
@@ -223,11 +335,24 @@ async function checkDiff(sha: string, version: string) {
     }
 
     const versions = {
-      added: assumeSameVersion == 'new' ? version : parseVersionLine(versionLines.added),
-      deleted: assumeSameVersion == 'old' ? version : !!versionLines.deleted && parseVersionLine(versionLines.deleted)
+      added:
+        assumeSameVersion == 'new'
+          ? version
+          : parseVersionLine(versionLines.added),
+      deleted:
+        assumeSameVersion == 'old'
+          ? version
+          : !!versionLines.deleted && parseVersionLine(versionLines.deleted)
     }
     if (versions.added != version && !assumeSameVersion) {
-      info(`- ${sha.substr(0, 7)}: added version doesn't match current one (added: "${versions.added}"; current: "${version}")`)
+      info(
+        `- ${sha.substr(
+          0,
+          7
+        )}: added version doesn't match current one (added: "${
+          versions.added
+        }"; current: "${version}")`
+      )
       return false
     }
 
@@ -251,9 +376,7 @@ async function getCommit(sha: string): Promise<CommitResponse> {
 }
 
 function parseVersionLine(str: string) {
-  return (str.split('"') || [])
-    .map(s => matchVersion(s))
-    .find(e => !!e)
+  return (str.split('"') || []).map((s) => matchVersion(s)).find((e) => !!e)
 }
 
 function matchVersion(str: string): string {
@@ -284,28 +407,30 @@ class ExitError extends Error {
   }
 }
 
-class NeutralExitError extends Error { }
+class NeutralExitError extends Error {}
 // #endregion
 
 if (require.main == module) {
   info('Searching for version update...')
-  main().then(() => {
-    if (typeof outputs.changed == 'undefined') {
-      output('changed', false)
-    }
+  main()
+    .then(() => {
+      if (typeof outputs.changed == 'undefined') {
+        output('changed', false)
+      }
 
-    startGroup('Outputs')
-    Object.entries(outputs).forEach(([key, value]) => {
-      info(`${key}: ${value}`)
+      startGroup('Outputs')
+      Object.entries(outputs).forEach(([key, value]) => {
+        info(`${key}: ${value}`)
+      })
+      endGroup()
     })
-    endGroup()
-  }).catch(e => {
-    if (e instanceof NeutralExitError) process.exitCode = 78
-    else {
-      process.exitCode = 1
-      error(e.message || e)
-    }
-  })
+    .catch((e) => {
+      if (e instanceof NeutralExitError) process.exitCode = 78
+      else {
+        process.exitCode = 1
+        error(e.message || e)
+      }
+    })
 }
 
 // #region Types and interfaces
