@@ -1,6 +1,6 @@
-import { Outputs, setOutputs } from './io'
+import { inputs, Outputs, setOutputs } from './io'
 import { checkPushedCommitDiffs } from './tasks/commit-diffs'
-import { endGroup, inputs, startGroup, tools } from './utils'
+import { endGroup, startGroup, tools } from './utils'
 
 async function main() {
   let outputs: Partial<Outputs> | undefined

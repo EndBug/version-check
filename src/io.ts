@@ -4,8 +4,7 @@ export interface Inputs {
   mode: 'commit_diff'
   packageFileName: string
 }
-const inputs = {} as Inputs
-export function getInputs() {
+function getInputs() {
   if (Object.entries(inputs).length) return inputs
 
   startGroup('Inputs')
@@ -30,6 +29,7 @@ export function getInputs() {
   endGroup()
   return inputs
 }
+export const inputs = getInputs()
 
 export interface Outputs {
   changed: boolean

@@ -1,9 +1,6 @@
 import { Toolkit } from 'actions-toolkit'
-import { getInputs } from './io'
 
 export const tools = new Toolkit({ event: ['push'] })
-
-export const inputs = getInputs()
 
 export function readLocalJson(filePath: string) {
   try {

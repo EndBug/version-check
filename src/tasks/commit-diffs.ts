@@ -1,6 +1,6 @@
 import semverDiff from 'semver-diff'
-import { Outputs } from '../io'
-import { inputs, tools } from '../utils'
+import { inputs, Outputs } from '../io'
+import { tools } from '../utils'
 
 export async function checkPushedCommitDiffs(): Promise<Outputs> {
   const { before, after } = tools.context.payload?.event || {}
