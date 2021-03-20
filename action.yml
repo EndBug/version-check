@@ -3,25 +3,39 @@ author: Federico Grandi
 description: An action that allows you to check whether your npm package version has been updated
 
 inputs:
-  diff-search:
-    description: Whether to search the bump commit using diffs (recommended ONLY if not using standard 'npm version' commits)
+  # diff-search:
+  #   description: Whether to search the bump commit using diffs (recommended ONLY if not using standard 'npm version' commits)
+  #   required: false
+  #   default: 'false'
+  # file-name:
+  #   description: A custom path to the package.json file
+  #   required: false
+  #   default: 'package.json'
+  # file-url:
+  #   description: A URL to use to fetch the package file, instead of loading the local file
+  #   required: false
+  # assume-same-version:
+  #   description: Whether to use the version fetched from the package file as the old one or the new one (instead of looking at the diffs)
+  #   required: false
+  # static-checking:
+  #   description: Whether to check the package from the file-url against the local package, instead of running the usual checks
+  #   required: false
+  # token:
+  #   description: A GitHub token to use when running on private repos
+  #   required: false
+  #   default: ${{ github.token }}
+  mode:
+    description: The task to run when checking for version changes
     required: false
-    default: 'false'
-  file-name:
-    description: A custom path to the package.json file
+    default: commit_diff
+  packageFileName:
+    description: The path of the local npm package file you want to check against
     required: false
-    default: 'package.json'
-  file-url:
-    description: A URL to use to fetch the package file, instead of loading the local file
-    required: false
-  assume-same-version:
-    description: Whether to use the version fetched from the package file as the old one or the new one (instead of looking at the diffs)
-    required: false
-  static-checking:
-    description: Whether to check the package from the file-url against the local package, instead of running the usual checks
-    required: false
-  token:
-    description: A GitHub token to use when running on private repos
+    default: package.json
+
+  # Dev note: handled directly by the toolkit library
+  github_token:
+    description: Token to use when authenticating to GitHub
     required: false
     default: ${{ github.token }}
 
@@ -30,10 +44,12 @@ outputs:
     description: Whether the version has changed in the examined commits
   type:
     description: The type of version change, if detectable (e.g. 'patch')
-  version:
-    description: The detected version number
-  commit:
-    description: The SHA of the commit where the version change has been detected
+  previous_version:
+    description: The detected previous version number
+  current_version:
+    description: The detected current version number
+  # commit:
+  #   description: The SHA of the commit where the version change has been detected
 
 runs:
   using: node12
