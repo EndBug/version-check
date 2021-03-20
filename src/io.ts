@@ -5,8 +5,7 @@ export interface Inputs {
   packageFileName: string
 }
 function getInputs() {
-  if (Object.entries(inputs).length) return inputs
-
+  const res = {}
   startGroup('Inputs')
   const validators: Record<keyof Inputs, (v: string) => boolean> = {
     mode: (v) => ['commit_diff'].includes(v),
@@ -21,13 +20,13 @@ function getInputs() {
       throw tools.exit.failure(
         `Invalid ${key} input: ${value} (${typeof value})`
       )
-    else inputs[key] = parsers[key] ? parsers[key](value) : value
+    else res[key] = parsers[key] ? parsers[key](value) : value
   }
 
   tools.log.success('Validation complete.')
-  tools.log.info('Current inputs:\n' + JSON.stringify(inputs, null, 2))
+  tools.log.info('Current inputs:\n' + JSON.stringify(res, null, 2))
   endGroup()
-  return inputs
+  return res as Inputs
 }
 export const inputs = getInputs()
 
