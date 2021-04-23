@@ -1,10 +1,15 @@
 import { Toolkit } from 'actions-toolkit'
+import fs from 'fs'
+import path from 'path'
 
 export const tools = new Toolkit({ event: ['push'] })
 
-export function readLocalJson(filePath: string) {
+export function readLocalJson(localFilePath: string) {
   try {
-    const data = tools.readFile(filePath, 'utf-8')
+    const filePath = path.join(tools.workspace, localFilePath)
+    tools.log.debug(`[readLocalJson] Reading file: ${filePath}`)
+
+    const data = fs.readFileSync(filePath, { encoding: 'utf-8' })
     if (typeof data == 'string') return JSON.parse(data)
   } catch (e) {
     return undefined
