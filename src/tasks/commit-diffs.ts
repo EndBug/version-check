@@ -3,9 +3,12 @@ import { inputs, Outputs } from '../io'
 import { tools } from '../utils'
 
 export async function checkPushedCommitDiffs(): Promise<Outputs> {
-  const { before, after } = tools.context.payload?.event || {}
+  const { payload } = tools.context
+  tools.log.debug(`Current payload: ${JSON.stringify(payload, null, 2)}`)
+
+  const { before, after } = payload?.event || {}
   if (!before || !after)
-    throw `Can't locate before & after SHAs:\nbefore: ${before}\nafter:${after}`
+    throw `Can't locate before & after SHAs:\n- before: ${before}\n- after: ${after}`
   tools.log.info(`Compare refs:\n- before: ${before}\n- after: ${after}`)
 
   // // https://docs.github.com/en/rest/reference/repos#compare-two-commits
