@@ -1,12 +1,13 @@
 import semverDiff from 'semver-diff'
 import { inputs, Outputs } from '../io'
 import { tools } from '../utils'
+import core from '@actions/core'
 
 export async function checkPushedCommitDiffs(): Promise<Outputs> {
   const { payload } = tools.context
-  tools.log.debug(`Current payload: ${JSON.stringify(payload, null, 2)}`)
+  core.debug(`Current payload: ${JSON.stringify(payload, null, 2)}`)
 
-  const { before, after } = payload?.event || {}
+  const { before, after } = payload || {}
   if (!before || !after)
     throw `Can't locate before & after SHAs:\n- before: ${before}\n- after: ${after}`
   tools.log.info(`Compare refs:\n- before: ${before}\n- after: ${after}`)
