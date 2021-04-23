@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/EndBug/version-check#readme",
   "dependencies": {
-    "actions-toolkit": "^6.0.1",
+    "actions-toolkit": "github:EndBug/actions-toolkit#core-actions",
     "axios": "^0.21.1",
     "semver-diff": "^3.1.1",
     "semver-regex": "^3.1.2"
