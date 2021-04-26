@@ -75,6 +75,8 @@ async function getCommitPackageFile(ref: string) {
       })
   )?.data?.content
 
+  core.debug(`File fetched for ${ref}:\n${rawFile}`)
+
   if (!rawFile || typeof rawFile != 'string')
     throw `Couldn't get package file from GitHub API.\nRef: ${ref}`
 
