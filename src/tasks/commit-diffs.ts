@@ -75,13 +75,14 @@ async function getCommitPackageFile(ref: string) {
       })
   )?.data?.content
 
-  core.debug(`File fetched for ${ref}:\n${rawFile}`)
-
   if (!rawFile || typeof rawFile != 'string')
     throw `Couldn't get package file from GitHub API.\nRef: ${ref}`
 
+  const decoded = Buffer.from(rawFile, 'base64').toString('utf8')
+  core.debug(`File fetched for ${ref}:\n${decoded}`)
+
   try {
-    return JSON.parse(Buffer.from(rawFile).toString())
+    return JSON.parse(decoded)
   } catch {
     throw `Couldn't parse package file to JSON. Ref: ${ref}`
   }
