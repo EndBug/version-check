@@ -81,7 +81,7 @@ async function getCommitPackageFile(ref: string) {
     throw `Couldn't get package file from GitHub API.\nRef: ${ref}`
 
   try {
-    return JSON.parse(rawFile)
+    return JSON.parse(Buffer.from(rawFile).toString())
   } catch {
     throw `Couldn't parse package file to JSON. Ref: ${ref}`
   }
