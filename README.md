@@ -24,7 +24,7 @@ You have to set up a step like this in your workflow (this assumes you've alread
     # Whether to search in every commit's diff. 
     # This is useful if you often do change the version without saying it in the commit message. If you always include the semver of the new version in your commit message when you bump versions then you can omit this.
     # Default: false
-    diff-search: true
+    diff-search: true 
 
     # You can use this to indicate a custom path to your `package.json`. If you keep your package file in the root directory (which is the usual approach) you can omit this.
     # Default: package.json
