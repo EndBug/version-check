@@ -30,7 +30,7 @@
   "homepage": "https://github.com/EndBug/version-check#readme",
   "dependencies": {
     "@actions/core": "^1.5.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.3",
     "semver-diff": "^3.1.1",
     "semver-regex": "^3.1.2"
   },
