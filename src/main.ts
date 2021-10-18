@@ -369,8 +369,13 @@ async function checkDiff(sha: string, version: string) {
 }
 
 async function getCommit(sha: string): Promise<CommitResponse> {
-  const url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`
-  return request(url)
+  const url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`,
+    res = await request(url)
+
+  if (typeof res != 'object' || !res)
+    throw new Error('Response data must be an object.')
+
+  return res as CommitResponse
 }
 
 function parseVersionLine(str: string) {
