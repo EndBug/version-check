@@ -7,7 +7,7 @@ You can use this GitHub action to check whether your npm package version has bee
 
 The main difference between this action and many others out there is that this doesn't do a specific task (it doesn't publish to registries, create tags or releases, send notifications, ...) but instead gives you an output that you can use in other steps of your workflow as you prefer: this way you don't have to deal with stuff you don't care about ;)
 
-This action is heavily inspired by [`npm-publish-action`](https://github.com/pascalgn/npm-publish-action) by [pascal](https://github.com/pascalgn): if you only care about publishing your package to npm automatically, this is the simplest solution :thumbsup:  
+This action is heavily inspired by [`npm-publish-action`](https://github.com/pascalgn/npm-publish-action) by [pascal](https://github.com/pascalgn): if you only care about publishing your package to npm automatically, this is the simplest solution :thumbsup:
 
 ## Usage
 
@@ -21,7 +21,7 @@ You have to set up a step like this in your workflow (this assumes you've alread
 
   with: # All these parameters are optional, check their descriptions to see if you need them.
 
-    # Whether to search in every commit's diff. 
+    # Whether to search in every commit's diff.
     # This is useful if you often do change the version without saying it in the commit message. If you always include the semver of the new version in your commit message when you bump versions then you can omit this.
     # Default: false
     diff-search: true
@@ -51,6 +51,10 @@ You have to set up a step like this in your workflow (this assumes you've alread
     # Please note that using the wrong value may make the action detect the change but fail to identify the type.
     # Default: ''
     static-checking: localIsNew
+
+    # If you are using an instance of GitHub Enterprise you can use this option to change the location of your GitHub api url.
+    # Default: 'https://api.github.com'
+    github-api-url: https://git.contoso.com/api/v3
 ```
 
 Now, when someone changes the version in `package.json` to `1.2.3` and pushes a commit with the message `<WHATEVER> 1.2.3` (eg. `Release 1.2.3` or `Bump version to v1.2.3`), output values are set (see Outputs below).
@@ -64,8 +68,8 @@ Please note that even if the action is built to be easier as possible to use, it
 - `version`: if the version has changed, it shows the version number (e.g. "1.0.2")
 - `commit`: if the version has changed, it shows the sha of the commit where the change has been found.
 
-To access these outputs, you need to access the context of the step you previously set up: you can find more info about steps contexts [here](https://help.github.com/en/articles/contexts-and-expression-syntax-for-github-actions#steps-context).  
-If you set your step id to `check` you'll find the outputs at `steps.check.outputs.OUTPUT_NAME`: you can use these outputs as conditions for other steps.  
+To access these outputs, you need to access the context of the step you previously set up: you can find more info about steps contexts [here](https://help.github.com/en/articles/contexts-and-expression-syntax-for-github-actions#steps-context).
+If you set your step id to `check` you'll find the outputs at `steps.check.outputs.OUTPUT_NAME`: you can use these outputs as conditions for other steps.
 Here's an example:
 
 ```yaml
@@ -88,7 +92,7 @@ Please keep in mind that when the `static-checking` option is used the `commit` 
 
 ### Publishing automatically to both NPM & GitHub Package Registry
 
-If you want to see how to publish automatically your package to both NPM & GPR, please see [this](doc/auto-publish-example.yml) example workflow ;)  
+If you want to see how to publish automatically your package to both NPM & GPR, please see [this](doc/auto-publish-example.yml) example workflow ;)
 You can also find a more in-depth guide in this [here](doc/auto-publish-walkthrough.md).
 
 ### Static-checking with your latest version on NPM
