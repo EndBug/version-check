@@ -25,7 +25,7 @@ inputs:
     required: false
     default: ${{ github.token }}
   github-api-url:
-    description: The url for your github api.  Some users may be using GitHub Enterprise and need to change this value.
+    description: The URL for your GitHub API. Some users may be using GitHub Enterprise and need to change this value.
     required: false
     default: https://api.github.com
 
