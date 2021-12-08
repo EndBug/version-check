@@ -8,7 +8,7 @@ import {
   startGroup,
   endGroup
 } from '@actions/core'
-import axios from 'axios'
+import got from 'got'
 import { readFileSync } from 'fs'
 import { join, normalize } from 'path'
 import semverDiff from 'semver-diff'
@@ -141,15 +141,15 @@ async function readJson(file: string, token?: string) {
       ? {
           Authorization: `token ${token}`
         }
-      : undefined
-    const { data } = await axios.get(file, { headers })
-    if (typeof data == 'string')
-      try {
-        return JSON.parse(data)
-      } catch (e) {
-        error(e instanceof Error ? e.stack || e.message : e + '')
-      }
-    if (typeof data == 'object') return data
+      : {}
+    return (
+      await got({
+        url: file,
+        method: 'GET',
+        headers,
+        responseType: 'json'
+      })
+    ).body
   } else {
     const data = readFileSync(file, { encoding: 'utf8' })
     if (typeof data == 'string')
@@ -166,8 +166,15 @@ async function request(url: string) {
     ? {
         Authorization: `Bearer ${token}`
       }
-    : undefined
-  return (await axios.get(url, { headers })).data
+    : {}
+  return (
+    await got({
+      url,
+      method: 'GET',
+      headers,
+      responseType: 'json'
+    })
+  ).body
 }
 
 async function processDirectory(
@@ -368,9 +375,15 @@ async function checkDiff(sha: string, version: string) {
   }
 }
 
+function trimTrailingSlashFromUrl(rawUrl) {
+  const url = rawUrl.trim()
+  return url.endsWith('/') ? url.slice(0, -1) : url
+}
+
 async function getCommit(sha: string): Promise<CommitResponse> {
-  const url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`,
-    res = await request(url)
+  const githubApiUrl = trimTrailingSlashFromUrl(getInput('github-api-url'))
+  const url = `${githubApiUrl}/repos/${process.env.GITHUB_REPOSITORY}/commits/${sha}`
+  const res = await request(url)
 
   if (typeof res != 'object' || !res)
     throw new Error('Response data must be an object.')

@@ -24,6 +24,10 @@ inputs:
     description: A GitHub token to use when running on private repos
     required: false
     default: ${{ github.token }}
+  github-api-url:
+    description: The URL for your GitHub API. Some users may be using GitHub Enterprise and need to change this value.
+    required: false
+    default: https://api.github.com
 
 outputs:
   changed:
@@ -37,7 +41,7 @@ outputs:
 
 runs:
   using: node12
-  main: "lib/index.js"
+  main: 'lib/index.js'
 
 branding:
   icon: package
