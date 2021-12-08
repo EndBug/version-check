@@ -1,6 +1,9 @@
 # Version check
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 You can use this GitHub action to check whether your npm package version has been updated: this can be extremely helpful if you want to automate your release process.
@@ -20,7 +23,6 @@ You have to set up a step like this in your workflow (this assumes you've alread
   uses: EndBug/version-check@v1 # You can choose the version/branch you prefer.
 
   with: # All these parameters are optional, check their descriptions to see if you need them.
-
     # Whether to search in every commit's diff.
     # This is useful if you often do change the version without saying it in the commit message. If you always include the semver of the new version in your commit message when you bump versions then you can omit this.
     # Default: false
@@ -98,6 +100,7 @@ You can also find a more in-depth guide in this [here](doc/auto-publish-walkthro
 ### Static-checking with your latest version on NPM
 
 If you want to check whether the version has changed since your last published version on NPM, you can do it using `file-url` and `static-checking`:
+
 - `file-url`: you need to use something like a raw.githubusercontent.com or unpkg.com URL, an API that will give you a JSON response with your package file.
 - `static-checking`: you're expecting your last published version to be older than the one in your repo, so we'll use `localIsNew`
 
@@ -110,10 +113,6 @@ If you want to check whether the version has changed since your last published v
 ```
 
 This step will have a `true` `changed` output every time our version is newer (there won't be any `commit` output).
-
-## Contributing
-
-If you want to contribute to the action, even by just raising a problem or proposing an idea, you can click [here](CONTRIBUTING.md) to find out how to do it ;)
 
 ## Contributors ✨
 
