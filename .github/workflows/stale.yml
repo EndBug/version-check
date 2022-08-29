@@ -1,0 +1,9 @@
+name: 'Close stale issues and PR'
+on:
+  schedule:
+    - cron: '00 5 * * *'
+  workflow_dispatch:
+
+jobs:
+  stale:
+    uses: EndBug/workflows/.github/workflows/stale.yml@main
