@@ -110,6 +110,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Gerrit0",
+      "name": "Gerrit Birkeland",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19329837?v=4",
+      "profile": "https://gerritbirkeland.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
