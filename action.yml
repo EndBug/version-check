@@ -40,7 +40,7 @@ outputs:
     description: The SHA of the commit where the version change has been detected
 
 runs:
-  using: node12
+  using: node16
   main: 'lib/index.js'
 
 branding:
