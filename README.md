@@ -41,7 +41,7 @@ You have to set up a step like this in your workflow (this assumes you've alread
     # the action on private repostiories, if you're running it on a public repo you
     # can omit this.
     # If you need to set this, you can use the built-in `GITHUB_TOKEN` secret that 
-    # GitHub generates for your repo's actions: you cna find more info about it here:
+    # GitHub generates for your repo's actions: you can find more info about it here:
     # https://help.github.com/en/github/automating-your-workflow-with-github-actions/virtual-environments-for-github-actions#github_token-secret
     # Default: ''
     token: ${{ secrets.GITHUB_TOKEN }}
