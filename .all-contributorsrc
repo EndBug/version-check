@@ -119,6 +119,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Hirse",
+      "name": "Jan Pilzer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2564094?v=4",
+      "profile": "https://github.com/Hirse",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
