@@ -1,7 +1,7 @@
 # Version check
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 You can use this GitHub action to check whether your npm package version has been updated: this can be extremely helpful if you want to automate your release process.
@@ -158,6 +158,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center"><a href="https://ludik.xyz/music"><img src="https://avatars0.githubusercontent.com/u/12783208?v=4?s=100" width="100px;" alt="spinlud"/><br /><sub><b>spinlud</b></sub></a><br /><a href="https://github.com/EndBug/version-check/issues?q=author%3Aspinlud" title="Bug reports">🐛</a></td>
       <td align="center"><a href="https://github.com/JasonCubic"><img src="https://avatars.githubusercontent.com/u/8921015?v=4?s=100" width="100px;" alt="JasonCubic"/><br /><sub><b>JasonCubic</b></sub></a><br /><a href="https://github.com/EndBug/version-check/commits?author=JasonCubic" title="Code">💻</a></td>
       <td align="center"><a href="https://gerritbirkeland.com"><img src="https://avatars.githubusercontent.com/u/19329837?v=4?s=100" width="100px;" alt="Gerrit Birkeland"/><br /><sub><b>Gerrit Birkeland</b></sub></a><br /><a href="https://github.com/EndBug/version-check/commits?author=Gerrit0" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/Hirse"><img src="https://avatars.githubusercontent.com/u/2564094?v=4?s=100" width="100px;" alt="Jan Pilzer"/><br /><sub><b>Jan Pilzer</b></sub></a><br /><a href="https://github.com/EndBug/version-check/commits?author=Hirse" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>
