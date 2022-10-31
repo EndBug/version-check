@@ -20,39 +20,61 @@ You have to set up a step like this in your workflow (this assumes you've alread
 - id: check # This will be the reference for getting the outputs.
   uses: EndBug/version-check@v1 # You can choose the version/branch you prefer.
 
-  with: # All these parameters are optional, check their descriptions to see if you need them.
+  with:
+    # All these parameters are optional,
+    # check their descriptions to see if you need them.
+  
     # Whether to search in every commit's diff.
-    # This is useful if you often do change the version without saying it in the commit message. If you always include the semver of the new version in your commit message when you bump versions then you can omit this.
+    # This is useful if you often do change the version without saying it in the
+    # commit message. If you always include the semver of the new version in your
+    # commit message when you bump versions then you can omit this.
     # Default: false
     diff-search: true
 
-    # You can use this to indicate a custom path to your `package.json`. If you keep your package file in the root directory (which is the usual approach) you can omit this.
+    # You can use this to indicate a custom path to your `package.json`. If you keep
+    # your package file in the root directory (which is the usual approach) you can
+    # omit this.
     # Default: package.json
     file-name: ./your/own/dir/someName.json
 
-    # You can put your bearer GitHub token here. This is needed only when running the action on private repostiories, if you're running it on a public repo you can omit this.
-    # If you need to set this, you can use the built-in `GITHUB_TOKEN` secret that GitHub generates for your repo's actions: you cna find more info about it here: https://help.github.com/en/github/automating-your-workflow-with-github-actions/virtual-environments-for-github-actions#github_token-secret
+    # You can put your bearer GitHub token here. This is needed only when running
+    # the action on private repostiories, if you're running it on a public repo you
+    # can omit this.
+    # If you need to set this, you can use the built-in `GITHUB_TOKEN` secret that 
+    # GitHub generates for your repo's actions: you can find more info about it here:
+    # https://help.github.com/en/github/automating-your-workflow-with-github-actions/virtual-environments-for-github-actions#github_token-secret
     # Default: ''
     token: ${{ secrets.GITHUB_TOKEN }}
 
-    # You can use this to make the action use an URL to get the package file, instead of using the one in your repo.
-    # Please note that the action will expect the version from that package file to be the same as the one that has been added in the commit: if you want to change this behavior take a look at the `assume-same-version` option.
-    # You can also set this to '::before', and the action will use the file from before the push event.
+    # You can use this to make the action use an URL to get the package file,
+    # instead of using the one in your repo.
+    # Please note that the action will expect the version from that package file to
+    # be the same as the one that has been added in the commit: if you want to
+    # change this behavior take a look at the `assume-same-version` option.
+    # You can also set this to '::before', and the action will use the file from
+    # before the push event.
     # Default: ''
     file-url: https://unpkg.com/pkg/package.json
 
-    # You can use this to make the action use the current version (either from the local file or the provided URL, see the `file-url` option) as either the added or deleted version.
-    # Accepted values are 'new' (if you want that version to be the "added" one) and 'old' (to make it the "deleted" one).
+    # You can use this to make the action use the current version (either from the
+    # local file or the provided URL, see the `file-url` option) as either the added
+    # or deleted version.
+    # Accepted values are 'new' (if you want that version to be the "added" one) and
+    # 'old' (to make it the "deleted" one).
     # Default: ''
     assume-same-version: old
 
-    # You can use this option to make the action check the local version against the remote one (from the provided URL, see the `file-url` option).
-    # Accepted values are 'localIsNew' (if you expect the local version to be newer than the remote one) and `remoteIsNew`.
-    # Please note that using the wrong value may make the action detect the change but fail to identify the type.
+    # You can use this option to make the action check the local version against the
+    # remote one (from the provided URL, see the `file-url` option).
+    # Accepted values are 'localIsNew' (if you expect the local version to be newer
+    # than the remote one) and `remoteIsNew`.
+    # Please note that using the wrong value may make the action detect the change
+    # but fail to identify the type.
     # Default: ''
     static-checking: localIsNew
 
-    # If you are using an instance of GitHub Enterprise you can use this option to change the location of your GitHub api url.
+    # If you are using an instance of GitHub Enterprise you can use this option to
+    # change the location of your GitHub api url.
     # Default: 'https://api.github.com'
     github-api-url: https://git.contoso.com/api/v3
 ```
