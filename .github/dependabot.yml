@@ -13,4 +13,14 @@ updates:
       prefix: 'chore'
       include: 'scope'
     labels:
-      - 'type: dependencies'
+      - 'type: chore'
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    commit-message:
+      include: scope
+      prefix: ci
+    labels:
+      - 'type: chore'
