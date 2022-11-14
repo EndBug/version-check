@@ -28,7 +28,7 @@ jobs:
         run: npm run build
 
       - name: Commit changes
-        uses: EndBug/add-and-commit@v4
+        uses: EndBug/add-and-commit@v9
         with:
           add: lib
           message: "[auto] build: update compiled version"
