@@ -18,7 +18,7 @@ You have to set up a step like this in your workflow (this assumes you've alread
 
 ```yaml
 - id: check # This will be the reference for getting the outputs.
-  uses: EndBug/version-check@v1 # You can choose the version/branch you prefer.
+  uses: EndBug/version-check@v2 # You can choose the version/branch you prefer.
 
   with:
     # All these parameters are optional,
@@ -97,7 +97,7 @@ Here's an example:
 ```yaml
 - name: Check if version has been updated
   id: check
-  uses: EndBug/version-check@v1
+  uses: EndBug/version-check@v2
 
 - name: Log when changed
   if: steps.check.outputs.changed == 'true'
@@ -126,7 +126,7 @@ If you want to check whether the version has changed since your last published v
 
 ```yaml
 - id: check
-  uses: EndBug/version-check@v1
+  uses: EndBug/version-check@v2
   with:
     file-url: https://unpkg.com/your-package@latest/package.json
     static-checking: localIsNew
