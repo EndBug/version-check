@@ -128,6 +128,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "JackNUMBER",
+      "name": "Antoine Cadoret",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2306550?v=4",
+      "profile": "http://jacknumber.fr",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
