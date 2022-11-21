@@ -232,7 +232,7 @@ async function checkCommits(
     )
     for (const commit of commits) {
       const { message, sha } = getBasicInfo(commit)
-      const match = message.match(semverRegex()) || []
+      const match: string[] = message.match(semverRegex()) || []
       if (match.includes(version)) {
         if (await checkDiff(sha, version)) {
           endGroup()
@@ -396,7 +396,7 @@ function parseVersionLine(str: string) {
 }
 
 function matchVersion(str: string): string {
-  return (str.match(semverRegex()) || [])[0]
+  return (str.match(semverRegex()) || ([] as string[]))[0]
 }
 
 function output(name: outputKey, value?: string | boolean) {
