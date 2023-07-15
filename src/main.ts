@@ -472,6 +472,7 @@ interface LocalCommit {
 function isLocalCommit(value): value is LocalCommit {
   return typeof value.id == 'string'
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isLocalCommitArray(value: any[]): value is LocalCommit[] {
   return isLocalCommit(value[0])
 }
