@@ -12,7 +12,12 @@ import got from 'got'
 import { readFileSync } from 'fs'
 import { join, normalize } from 'path'
 import semverDiff from 'semver-diff'
-import semverRegex from 'semver-regex'
+
+const semverRE =
+  /^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
+
+const semverReGlobal =
+  /(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/gm
 
 const packageFileName = normalize(getInput('file-name') || 'package.json'),
   dir = process.env.GITHUB_WORKSPACE || '/github/workspace',
@@ -97,18 +102,23 @@ async function main() {
       return setFailed(`Couldn't find ${local ? 'local' : 'remote'} version.`)
     }
 
-    if (
-      (local.match(semverRegex()) || [])[0] !=
-      (remote.match(semverRegex()) || [])[0]
-    ) {
+    if (!semverRE.test(local)) {
+      return setFailed(`Local version does not match semver pattern`)
+    }
+
+    if (!semverRE.test(remote)) {
+      return setFailed(`Remote version does not match semver pattern`)
+    }
+
+    const versionDiff =
+      staticChecking === 'localIsNew'
+        ? semverDiff(remote, local)
+        : semverDiff(local, remote)
+
+    if (versionDiff) {
       output('changed', true)
       output('version', staticChecking == 'localIsNew' ? local : remote)
-      output(
-        'type',
-        staticChecking == 'localIsNew'
-          ? semverDiff(remote, local)
-          : semverDiff(local, remote)
-      )
+      output('type', versionDiff)
 
       endGroup()
       info(
@@ -232,7 +242,7 @@ async function checkCommits(
     )
     for (const commit of commits) {
       const { message, sha } = getBasicInfo(commit)
-      const match: string[] = message.match(semverRegex()) || []
+      const match: string[] = message.match(semverReGlobal) || []
       if (match.includes(version)) {
         if (await checkDiff(sha, version)) {
           endGroup()
@@ -396,7 +406,7 @@ function parseVersionLine(str: string) {
 }
 
 function matchVersion(str: string): string {
-  return (str.match(semverRegex()) || ([] as string[]))[0]
+  return (str.match(semverReGlobal) || ([] as string[]))[0]
 }
 
 function output(name: outputKey, value?: string | boolean) {
