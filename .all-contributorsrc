@@ -137,8 +137,18 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "kusyka911",
+      "name": "Vladislav",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24293461?v=4",
+      "profile": "https://github.com/kusyka911",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
-  "skipCi": true
+  "skipCi": true,
+  "commitType": "docs"
 }
