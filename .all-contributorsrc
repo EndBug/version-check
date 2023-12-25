@@ -146,6 +146,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "SwabianCoder",
+      "name": "SwabianCoder",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43047586?v=4",
+      "profile": "https://github.com/SwabianCoder",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
