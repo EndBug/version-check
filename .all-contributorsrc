@@ -146,6 +146,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "bayssmekanique",
+      "name": "Zach Cardoza",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2280384?v=4",
+      "profile": "https://zachcardoza.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
