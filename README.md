@@ -1,7 +1,9 @@
 # Version check
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 You can use this GitHub action to check whether your npm package version has been updated: this can be extremely helpful if you want to automate your release process.
@@ -23,7 +25,7 @@ You have to set up a step like this in your workflow (this assumes you've alread
   with:
     # All these parameters are optional,
     # check their descriptions to see if you need them.
-  
+
     # Whether to search in every commit's diff.
     # This is useful if you often do change the version without saying it in the
     # commit message. If you always include the semver of the new version in your
@@ -40,7 +42,7 @@ You have to set up a step like this in your workflow (this assumes you've alread
     # You can put your bearer GitHub token here. This is needed only when running
     # the action on private repostiories, if you're running it on a public repo you
     # can omit this.
-    # If you need to set this, you can use the built-in `GITHUB_TOKEN` secret that 
+    # If you need to set this, you can use the built-in `GITHUB_TOKEN` secret that
     # GitHub generates for your repo's actions: you can find more info about it here:
     # https://help.github.com/en/github/automating-your-workflow-with-github-actions/virtual-environments-for-github-actions#github_token-secret
     # Default: ''
@@ -86,7 +88,7 @@ Please note that even if the action is built to be easier as possible to use, it
 ### Outputs
 
 - `changed`: either "true" or "false", indicates whether the version has changed.
-- `type`: if the version has changed, it tries to find the type of bump (e.g. "patch", "minor", ...)
+- `type`: if the version has changed, it tries to find the type of bump (e.g. "patch", "minor", ...). To see the full list of available types, please refer to the [`semver-diff` docs](https://github.com/sindresorhus/semver-diff/blob/1f2ac09e19213122094b9c49c7ac9bf4089da93b/readme.md)
 - `version`: if the version has changed, it shows the version number (e.g. "1.0.2")
 - `commit`: if the version has changed, it shows the sha of the commit where the change has been found.
 
