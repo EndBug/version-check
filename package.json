@@ -11,23 +11,6 @@
     "prepare": "husky install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/EndBug/version-check.git"
-  },
-  "keywords": [
-    "github",
-    "action",
-    "version",
-    "npm",
-    "node"
-  ],
-  "author": "Federico Grandi <fgrandi30@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/EndBug/version-check/issues"
-  },
-  "homepage": "https://github.com/EndBug/version-check#readme",
   "dependencies": {
     "@actions/core": "^1.10.1",
     "got": "^11.8.3",
@@ -45,5 +28,25 @@
     "husky": "^8.0.3",
     "prettier": "^3.1.1",
     "typescript": "^5.3.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EndBug/version-check.git"
+  },
+  "keywords": [
+    "github",
+    "action",
+    "version",
+    "npm",
+    "node"
+  ],
+  "author": "Federico Grandi <fgrandi30@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EndBug/version-check/issues"
+  },
+  "homepage": "https://github.com/EndBug/version-check#readme",
+  "engines": {
+    "node": ">=20"
   }
 }
