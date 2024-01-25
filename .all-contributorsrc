@@ -164,6 +164,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "Tpleme",
+      "name": "Leandro Melo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/72796924?v=4",
+      "profile": "https://www.linkedin.com/in/leandro-melo-8b17021ba/",
+      "contributions": [
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
