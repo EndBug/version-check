@@ -1,10 +1,10 @@
-*Note: the result of all these steps can be found [here][1], in the workflow file I actually used for my package.*
+_Note: the result of all these steps can be found [here][1], in the workflow file I actually used for my package._
 
 ## 1. Making sure that the "publish" job gets executed on the version that has been just built
 
-The easiest way I found was just to put the two jobs in the same workflow, and having them both fire on every `push` event: the publish job was then limited to execute only if on the `master` branch and after the first one.
+The easiest way I found was just to put the two jobs in the same workflow, and having them both fire on every `push` event: the publish job was then limited to execute only if on the `main` branch and after the first one.
 
- - **Build job:**  
+- **Build job:**
 
 It needs to build the new version of the package, then **commit** it to the repository: committing is crucial because that allows the other job to pick the built version. To commit the changes made inside a workflow run, you can use one of my actions, [`add-and-commit`][2]: it will push the changes to the GitHub repository using a "fake" git user.  
 You workflow job should look something like this:
@@ -15,61 +15,57 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
-    steps: 
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '10.x'
-    
-    - name: Install dependencies
-      run: npm install --only=prod
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
 
-    - name: Compile build
-      run: npm run build # This can be whatever command you use to build your package
+      - name: Install dependencies
+        run: npm install --only=prod
 
-    - name: Commit changes
-      uses: EndBug/add-and-commit@v2
-      with: # More info about the arguments on the action page
-        author_name: Displayed name
-        author_email: Displayed email
-        message: "Message for the commit"
-        path: local/path/to/built/version
-        pattern: "*.js" # Pattern that matches the files to commit
-        force: true # Whether to use the --force flag
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This gets generated automatically
+      - name: Compile build
+        run: npm run build # This can be whatever command you use to build your package
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with: # More info about the arguments on the action page
+          author_name: Displayed name
+          author_email: Displayed email
+          message: 'Message for the commit'
+          add: local/path/to/built/version/"*.js --force
 ```
 
+- **Publish job:**
 
- - **Publish job:**  
-
-We want it to run only in the `master` branch after `build` is completed, so we can set it like this:
+We want it to run only in the `main` branch after `build` is completed, so we can set it like this:
 
 ```yml
 publish:
   name: Publish to NPM & GitHub Package Registry
   runs-on: ubuntu-latest
-  if: contains(github.ref, 'master') # This sets the branch
+  if: contains(github.ref, 'main') # This sets the branch
   needs: build # This makes it wait for the build job
 ```
 
-## 2. Detecting a version change  
+## 2. Detecting a version change
+
 I didn't find a good way to do that so I made another action, [`version-check`][3]: this action scans the commits of every push and tries to figure out whether they include a version change. Remeber to set eventual needed arguments/inputs!  
 You need to set up these two steps:
 
 ```yml
 steps:
-- name: Checkout repository
-  uses: actions/checkout@v2
-  with:
-    ref: master
+  - name: Checkout repository
+    uses: actions/checkout@v4
+    with:
+      ref: main
 
-- name: Check version changes
-  uses: EndBug/version-check@v1 # More info about the arguments on the action page
-  id: check # This will be the reference for later
+  - name: Check version changes
+    uses: EndBug/version-check@v2 # More info about the arguments on the action page
+    id: check # This will be the reference for later
 ```
 
 You could also use the `static-check` and `file-url` option to detect teh version change, but if more checks run at the same time this can make it try to publish it multiple times.
@@ -114,9 +110,9 @@ In this example, I'll assume your secret is called `NPM_TOKEN`:
 As for now, GitHub Package Registry is not very pleasant to work with if you want to keep publishing your existing package to npm: that's why it requires packages to be scoped, and that can mess thing up (your package may not be scoped or be scoped under a different name).  
 I found that the easiest way to deal with that is doing this workaround:
 
- - In your workflow, re-setup Node.js but adding GPR's registry URL and your name-scope
- - Create an npm script that edits your package.json so that it changes the original name of the package to the one you need to publish to GPR (scope included)
- - After calling that script in your workflow, use `npm publish` as before, but this time using the built-in `GITHUB_TOKEN` as `NODE_AUTH_TOKEN`.
+- In your workflow, re-setup Node.js but adding GPR's registry URL and your name-scope
+- Create an npm script that edits your package.json so that it changes the original name of the package to the one you need to publish to GPR (scope included)
+- After calling that script in your workflow, use `npm publish` as before, but this time using the built-in `GITHUB_TOKEN` as `NODE_AUTH_TOKEN`.
 
 ```json
 {
@@ -166,15 +162,14 @@ fs.writeFileSync(join(__dirname, '../package.json'), JSON.stringify(pkg))
 Your package is now published both to NPM and GPR (a description needs to be manually added to GPR though).
 You can find all of the stuff I'm referring to in the 4.0.3 version of uptime-monitor:
 
- - [Build/publish workflow][1]
- - [GPR script][8]
+- [Build/publish workflow][1]
+- [GPR script][8]
 
-
-  [1]: https://github.com/EndBug/uptime-monitor/blob/v4.0.3/.github/workflows/build-and-publish.yml
-  [2]: https://github.com/marketplace/actions/add-commit
-  [3]: https://github.com/marketplace/actions/version-check
-  [4]: https://help.github.com/en/articles/contexts-and-expression-syntax-for-github-actions#steps-context
-  [5]: https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobsjob_idif
-  [6]: https://npmjs.com
-  [7]: https://help.github.com/en/articles/virtual-environments-for-github-actions#creating-and-using-secrets-encrypted-variables
-  [8]: https://github.com/EndBug/uptime-monitor/blob/v4.0.3/scripts/gpr.js
+[1]: https://github.com/EndBug/uptime-monitor/blob/v4.0.3/.github/workflows/build-and-publish.yml
+[2]: https://github.com/marketplace/actions/add-commit
+[3]: https://github.com/marketplace/actions/version-check
+[4]: https://help.github.com/en/articles/contexts-and-expression-syntax-for-github-actions#steps-context
+[5]: https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobsjob_idif
+[6]: https://npmjs.com
+[7]: https://help.github.com/en/articles/virtual-environments-for-github-actions#creating-and-using-secrets-encrypted-variables
+[8]: https://github.com/EndBug/uptime-monitor/blob/v4.0.3/scripts/gpr.js
