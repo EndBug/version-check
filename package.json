@@ -8,7 +8,7 @@
     "watch": "ncc build src/main.ts --watch --out lib",
     "lint": "eslint ./src --ext ts && echo 'Lint complete.'",
     "lintfix": "eslint ./src --ext ts --fix && echo \"Lint & fix complete.\"",
-    "prepare": "husky install",
+    "prepare": "husky",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
