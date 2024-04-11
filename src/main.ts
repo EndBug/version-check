@@ -258,7 +258,7 @@ async function checkCommits(
     }
     endGroup()
 
-    if (getInput('diff-search')) {
+    if (getInput('diff-search') === 'true') {
       info(
         'No standard npm version commit found, switching to diff search (this could take more time...)'
       )
