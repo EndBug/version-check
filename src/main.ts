@@ -1,5 +1,6 @@
 import {
   getInput,
+  getBooleanInput,
   setFailed,
   info,
   error,
@@ -122,8 +123,7 @@ async function main() {
 
       endGroup()
       info(
-        `Found match for version ${
-          staticChecking == 'localIsNew' ? local : remote
+        `Found match for version ${staticChecking == 'localIsNew' ? local : remote
         }`
       )
     }
@@ -149,8 +149,8 @@ async function readJson(file: string, token?: string) {
   if (isURL(file)) {
     const headers = token
       ? {
-          Authorization: `token ${token}`
-        }
+        Authorization: `token ${token}`
+      }
       : {}
     return (
       await got({
@@ -174,8 +174,8 @@ async function readJson(file: string, token?: string) {
 async function request(url: string) {
   const headers = token
     ? {
-        Authorization: `Bearer ${token}`
-      }
+      Authorization: `Bearer ${token}`
+    }
     : {}
   return (
     await got({
@@ -225,19 +225,16 @@ async function checkCommits(
 ) {
   try {
     startGroup(
-      `Searching in ${commits.length} commit${
-        commits.length == 1 ? '' : 's'
+      `Searching in ${commits.length} commit${commits.length == 1 ? '' : 's'
       }...`
     )
     info(`Package file name: "${packageFileName}"`)
     info(
-      `Package file URL: ${
-        packageFileURL ? `"${packageFileURL}"` : 'undefined'
+      `Package file URL: ${packageFileURL ? `"${packageFileURL}"` : 'undefined'
       }`
     )
     info(
-      `Version assumptions: ${
-        assumeSameVersion ? `"${assumeSameVersion}"` : 'undefined'
+      `Version assumptions: ${assumeSameVersion ? `"${assumeSameVersion}"` : 'undefined'
       }`
     )
     for (const commit of commits) {
@@ -258,7 +255,7 @@ async function checkCommits(
     }
     endGroup()
 
-    if (getInput('diff-search') === 'true') {
+    if (getBooleanInput('diff-search')) {
       info(
         'No standard npm version commit found, switching to diff search (this could take more time...)'
       )
@@ -272,8 +269,7 @@ async function checkCommits(
       }
 
       startGroup(
-        `Checking the diffs of ${commits.length} commit${
-          commits.length == 1 ? '' : 's'
+        `Checking the diffs of ${commits.length} commit${commits.length == 1 ? '' : 's'
         }...`
       )
       for (const commit of commits) {
@@ -364,8 +360,7 @@ async function checkDiff(sha: string, version: string) {
         `- ${sha.substr(
           0,
           7
-        )}: added version doesn't match current one (added: "${
-          versions.added
+        )}: added version doesn't match current one (added: "${versions.added
         }"; current: "${version}")`
       )
       return false
@@ -433,7 +428,7 @@ class ExitError extends Error {
   }
 }
 
-class NeutralExitError extends Error {}
+class NeutralExitError extends Error { }
 // #endregion
 
 if (require.main == module) {
