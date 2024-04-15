@@ -173,6 +173,15 @@
       "contributions": [
         "maintenance"
       ]
+    },
+    {
+      "login": "mrkpatchaa",
+      "name": "Médédé Raymond KPATCHAA",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1266755?v=4",
+      "profile": "https://mrkpatchaa.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

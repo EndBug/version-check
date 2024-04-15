@@ -1,7 +1,7 @@
 # Version check
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-18-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-19-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 You can use this GitHub action to check whether your npm package version has been updated: this can be extremely helpful if you want to automate your release process.
@@ -166,6 +166,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://zachcardoza.com"><img src="https://avatars.githubusercontent.com/u/2280384?v=4?s=100" width="100px;" alt="Zach Cardoza"/><br /><sub><b>Zach Cardoza</b></sub></a><br /><a href="https://github.com/EndBug/version-check/issues?q=author%3Abayssmekanique" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/HarelM"><img src="https://avatars.githubusercontent.com/u/3269297?v=4?s=100" width="100px;" alt="Harel M"/><br /><sub><b>Harel M</b></sub></a><br /><a href="https://github.com/EndBug/version-check/commits?author=HarelM" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/leandro-melo-8b17021ba/"><img src="https://avatars.githubusercontent.com/u/72796924?v=4?s=100" width="100px;" alt="Leandro Melo"/><br /><sub><b>Leandro Melo</b></sub></a><br /><a href="#maintenance-Tpleme" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://mrkpatchaa.com"><img src="https://avatars.githubusercontent.com/u/1266755?v=4?s=100" width="100px;" alt="Médédé Raymond KPATCHAA"/><br /><sub><b>Médédé Raymond KPATCHAA</b></sub></a><br /><a href="https://github.com/EndBug/version-check/issues?q=author%3Amrkpatchaa" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
