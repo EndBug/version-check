@@ -1,5 +1,6 @@
 import {
   getInput,
+  getBooleanInput,
   setFailed,
   info,
   error,
@@ -192,9 +193,10 @@ async function processDirectory(
   commits: LocalCommit[] | PartialCommitResponse[]
 ) {
   try {
-    const packageObj = await (packageFileURL
-      ? readJson(packageFileURL)
-      : readJson(join(dir, packageFileName))
+    const packageObj = await (
+      packageFileURL
+        ? readJson(packageFileURL)
+        : readJson(join(dir, packageFileName))
     ).catch(() => {
       Promise.reject(
         new NeutralExitError(`Package file not found: ${packageFileName}`)
@@ -258,7 +260,7 @@ async function checkCommits(
     }
     endGroup()
 
-    if (getInput('diff-search')) {
+    if (getBooleanInput('diff-search')) {
       info(
         'No standard npm version commit found, switching to diff search (this could take more time...)'
       )
