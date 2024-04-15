@@ -1,14 +1,7 @@
 {
   "projectName": "version-check",
   "projectOwner": "EndBug",
-  "repoType": "github",
-  "repoHost": "https://github.com",
-  "files": [
-    "README.md"
-  ],
-  "imageSize": 100,
   "commit": true,
-  "commitConvention": "angular",
   "contributors": [
     {
       "login": "EndBug",
@@ -148,6 +141,15 @@
       ]
     },
     {
+      "login": "SwabianCoder",
+      "name": "SwabianCoder",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43047586?v=4",
+      "profile": "https://github.com/SwabianCoder",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
       "login": "bayssmekanique",
       "name": "Zach Cardoza",
       "avatar_url": "https://avatars.githubusercontent.com/u/2280384?v=4",
@@ -183,8 +185,5 @@
         "bug"
       ]
     }
-  ],
-  "contributorsPerLine": 7,
-  "skipCi": true,
-  "commitType": "docs"
+  ]
 }
