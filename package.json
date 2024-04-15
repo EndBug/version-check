@@ -1,6 +1,6 @@
 {
   "name": "version-check",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "An action that allows you to check whether your npm package version has been updated",
   "main": "lib/main.js",
   "scripts": {
