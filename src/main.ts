@@ -95,7 +95,9 @@ async function main() {
       remote: string = (
         await readJson(
           packageFileURL,
-          isPackageFileURLBefore && token ? token : undefined
+          (isPackageFileURLBefore || isRawGithubUrl(packageFileURL)) && token
+            ? token
+            : undefined
         )
       )?.version
     if (!local || !remote) {
@@ -144,6 +146,11 @@ function isURL(str: string) {
   } catch {
     return false
   }
+}
+
+function isRawGithubUrl(str: string) {
+  const url = new URL(str)
+  return url.hostname === 'raw.githubusercontent.com'
 }
 
 async function readJson(file: string, token?: string) {
