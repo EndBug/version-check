@@ -28,6 +28,10 @@ inputs:
     description: The URL for your GitHub API. Some users may be using GitHub Enterprise and need to change this value.
     required: false
     default: https://api.github.com
+  reverse:
+    description: Whether to reverse the commits order when searching for the version bump
+    required: false
+    default: 'false'
 
 outputs:
   changed:

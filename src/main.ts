@@ -133,6 +133,12 @@ async function main() {
     const commits =
       eventObj.commits ||
       (await request(eventObj.pull_request._links.commits.href))
+    console.log('DEBUG: original commits', commits)
+    if (getBooleanInput('reverse')) commits.reverse()
+    console.log(
+      `DEBUG: reversed commits? reverse = ${getBooleanInput('reverse')}`,
+      commits
+    )
     await processDirectory(dir, commits)
   }
 }

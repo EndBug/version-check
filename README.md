@@ -77,6 +77,11 @@ You have to set up a step like this in your workflow (this assumes you've alread
     # change the location of your GitHub api url.
     # Default: 'https://api.github.com'
     github-api-url: https://git.contoso.com/api/v3
+
+    # If you suspect that you may have a PR with more than 30 commits, then you should set 
+    # this to true so that it will check the most recent commits for a package version change.
+    # Default: false
+    reverse: true
 ```
 
 Now, when someone changes the version in `package.json` to `1.2.3` and pushes a commit with the message `<WHATEVER> 1.2.3` (eg. `Release 1.2.3` or `Bump version to v1.2.3`), output values are set (see Outputs below).
