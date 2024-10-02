@@ -1,7 +1,7 @@
 # Version check
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-21-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-22-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 You can use this GitHub action to check whether your npm package version has been updated: this can be extremely helpful if you want to automate your release process.
@@ -169,6 +169,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/leandro-melo-8b17021ba/"><img src="https://avatars.githubusercontent.com/u/72796924?v=4?s=100" width="100px;" alt="Leandro Melo"/><br /><sub><b>Leandro Melo</b></sub></a><br /><a href="#maintenance-Tpleme" title="Maintenance">🚧</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://mrkpatchaa.com"><img src="https://avatars.githubusercontent.com/u/1266755?v=4?s=100" width="100px;" alt="Médédé Raymond KPATCHAA"/><br /><sub><b>Médédé Raymond KPATCHAA</b></sub></a><br /><a href="#bug-mrkpatchaa" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/christulin"><img src="https://avatars.githubusercontent.com/u/47799223?v=4?s=100" width="100px;" alt="Chris Tulin"/><br /><sub><b>Chris Tulin</b></sub></a><br /><a href="#code-christulin" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/khurrambilalaurecon"><img src="https://avatars.githubusercontent.com/u/101312231?v=4?s=100" width="100px;" alt="Khurram"/><br /><sub><b>Khurram</b></sub></a><br /><a href="#bug-khurrambilalaurecon" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
