@@ -102,7 +102,7 @@ async function main() {
       )?.version
     if (!local || !remote) {
       endGroup()
-      return setFailed(`Couldn't find ${local ? 'local' : 'remote'} version.`)
+      return setFailed(`Couldn't find ${local ? 'remote' : 'local'} version.`)
     }
 
     if (!semverRE.test(local)) {
@@ -380,7 +380,6 @@ async function checkDiff(sha: string, version: string) {
       return false
     }
 
-    output('changed', true)
     output('version', version)
     if (versions.deleted)
       output('type', semverDiff(versions.deleted, versions.added as string))
