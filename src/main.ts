@@ -380,6 +380,7 @@ async function checkDiff(sha: string, version: string) {
       return false
     }
 
+    output('changed', true)
     output('version', version)
     if (versions.deleted)
       output('type', semverDiff(versions.deleted, versions.added as string))
