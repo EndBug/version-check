@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: Test build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: npm i
@@ -15,7 +15,7 @@ jobs:
 
   lint:
     name: Check linting
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: npm i
