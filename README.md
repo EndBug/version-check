@@ -1,7 +1,7 @@
 # Version check
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-23-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-24-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 You can use this GitHub action to check whether your npm package version has been updated: this can be extremely helpful if you want to automate your release process.
@@ -173,6 +173,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/khurrambilalaurecon"><img src="https://avatars.githubusercontent.com/u/101312231?v=4?s=100" width="100px;" alt="Khurram"/><br /><sub><b>Khurram</b></sub></a><br /><a href="#bug-khurrambilalaurecon" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/patrickschroeter"><img src="https://avatars.githubusercontent.com/u/14996876?v=4?s=100" width="100px;" alt="Patrick &#124; TEAM23"/><br /><sub><b>Patrick &#124; TEAM23</b></sub></a><br /><a href="#bug-patrickschroeter" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/guillaume-docquier-vention"><img src="https://avatars.githubusercontent.com/u/104782888?v=4?s=100" width="100px;" alt="Guillaume Docquier"/><br /><sub><b>Guillaume Docquier</b></sub></a><br /><a href="#bug-guillaume-docquier-vention" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
