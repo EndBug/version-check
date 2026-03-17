@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: main
 
@@ -26,7 +26,7 @@ jobs:
 
       - name: Set up Node.js for NPM
         if: steps.check.outputs.changed == 'true'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           registry-url: 'https://registry.npmjs.org'
 
@@ -42,7 +42,7 @@ jobs:
 
       - name: Set up Node.js for GPR
         if: steps.check.outputs.changed == 'true'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           registry-url: 'https://npm.pkg.github.com/'
           scope: '@endbug'

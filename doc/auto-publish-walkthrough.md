@@ -17,12 +17,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20.x'
+          node-version: '24.x'
 
       - name: Install dependencies
         run: npm install --only=prod
@@ -59,7 +59,7 @@ You need to set up these two steps:
 ```yml
 steps:
   - name: Checkout repository
-    uses: actions/checkout@v4
+    uses: actions/checkout@v6
     with:
       ref: main
 
@@ -90,7 +90,7 @@ In this example, I'll assume your secret is called `NPM_TOKEN`:
 ```yml
 - name: Set up Node.js for NPM
   if: steps.check.outputs.changed == 'true'
-  uses: actions/setup-node@v1
+  uses: actions/setup-node@v6
   with:
     registry-url: 'https://registry.npmjs.org' # This is just the default registry URL
 
@@ -141,7 +141,7 @@ fs.writeFileSync(join(__dirname, '../package.json'), JSON.stringify(pkg))
 ```yml
 - name: Set up Node.js for GPR
   if: steps.check.outputs.changed == 'true'
-  uses: actions/setup-node@v1
+  uses: actions/setup-node@v6
   with:
     registry-url: 'https://npm.pkg.github.com/'
     scope: '@yourscope'
