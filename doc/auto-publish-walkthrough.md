@@ -64,7 +64,7 @@ steps:
       ref: main
 
   - name: Check version changes
-    uses: EndBug/version-check@v2 # More info about the arguments on the action page
+    uses: EndBug/version-check@v3 # More info about the arguments on the action page
     id: check # This will be the reference for later
 ```
 
