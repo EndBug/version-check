@@ -132,11 +132,23 @@ async function main() {
     }
   } else {
     const eventObj = await readJson(eventFile)
-    const commits =
-      eventObj.commits ||
-      (await request(eventObj.pull_request._links.commits.href))
+    const commits = await getEventCommits(eventObj)
+
+    if (!commits) {
+      return setFailed(
+        'Could not find commits in this workflow event. Run version-check on a push or pull_request event, or use `static-checking` with `file-url` for events such as workflow_dispatch, workflow_call, workflow_run, or release.'
+      )
+    }
+
     await processDirectory(dir, commits)
   }
+}
+
+async function getEventCommits(eventObj) {
+  if (Array.isArray(eventObj?.commits)) return eventObj.commits
+
+  const commitsUrl = eventObj?.pull_request?._links?.commits?.href
+  if (commitsUrl) return request(commitsUrl)
 }
 
 function isURL(str: string) {
